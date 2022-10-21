@@ -1,6 +1,6 @@
 {
   "name": "mathmesh",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "to generate mathtext mesh for 3D engine like threejs or babylonjs",
   "scripts": {
     "build": "webpack"

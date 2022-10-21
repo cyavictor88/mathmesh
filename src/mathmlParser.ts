@@ -1040,8 +1040,30 @@ export class MMParser {
 
 
         }
+        let finalVertices = {positions:[],indices:[]}; 
+        let aggreIndex = 0;
 
-        return finalVertexArr;
+        for (let i = 0; i < finalVertexArr.length; i++) {
+            const vert = finalVertexArr[i];
+            const vertIndixes = finalVertexArr[i].indices;
+            const vertPositions = finalVertexArr[i].positions;
+            for (let j=0;j<vertIndixes.length;j++)
+            {
+                finalVertices.indices.push(vertIndixes[j]+aggreIndex);
+            }
+            for (let j=0;j<vertPositions.length;j++)
+            {
+                finalVertices.positions.push(vertPositions[j]);
+            }
+            aggreIndex = aggreIndex + lodash.max(vertIndixes)+1;
+    
+    
+            
+            
+        }
+    
+        return finalVertices;
+        // return finalVertexArr;
 
     }
 
