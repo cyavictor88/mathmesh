@@ -5,7 +5,8 @@
   "scripts": {
     "build": "webpack"
   },
-  "author": "",
+  "main":"dist/mathmesh.js",
+  "author": "cyavictor88 <cyavictor88@gmail.com>",
   "license": "ISC",
   "dependencies": {
     "fast-xml-parser": "^4.0.11",
