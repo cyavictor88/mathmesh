@@ -1,0 +1,22 @@
+{
+  "name": "mathmesh",
+  "version": "1.0.0",
+  "description": "to generate mathtext mesh for 3D engine like threejs or babylonjs",
+  "scripts": {
+    "build": "webpack"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fast-xml-parser": "^4.0.11",
+    "katex": "^0.16.2",
+    "lodash": "^4.17.21",
+    "mathjs": "^11.3.1"
+  },
+  "devDependencies": {
+    "ts-loader": "^9.4.1",
+    "typescript": "^4.8.4",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
+  }
+}
