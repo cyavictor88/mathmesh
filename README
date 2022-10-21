@@ -1,0 +1,31 @@
+To use:
+
+1.
+in some dir:
+
+$ npm init
+
+in index.js:
+
+const mathmesh = require("mathmesh");
+console.log(mathmesh.mathmesh("\\frac{99}{3}"));
+
+
+$ node index.js
+
+2.
+in some dir:
+
+$ npm init
+
+put  "type": "module",   in package.json
+
+in index.js:
+
+import {mathmesh} from "mathmesh";
+console.log(mathmesh("\\frac{99}{3}"));
+
+$ node index.js
+
+
+3. 
