@@ -6,6 +6,7 @@ import * as lodash from 'lodash';
 
 import { MathMlStringMesh ,TypeMesh} from './mathml2mesh';
 import { EleDim as ED } from './EleDim';
+import { number } from 'mathjs';
 
 export enum MEleType {
     Start = 0,
@@ -1061,7 +1062,41 @@ export class MMParser {
             
             
         }
-    
+        let poses = finalVertices["positions"];
+        let minx=lodash.max(poses);
+        let miny=minx;
+        let minz=minx;
+        for(let i=0; i<poses.length;i++)
+        {
+            if(i%3==0)
+            {
+                if(poses[i]<minx) minx=poses[i];
+            }
+            if(i%3==1)
+            {
+                if(poses[i]<miny) miny=poses[i];
+            }
+            if(i%3==2)
+            {
+                if(poses[i]<minz) minz=poses[i];
+            }
+        }
+
+        for(let i=0; i<poses.length;i++)
+        {
+            if(i%3==0)
+            {
+                poses[i]-=minx;
+            }
+            if(i%3==1)
+            {
+                poses[i]-=miny;
+            }
+            if(i%3==2)
+            {
+                poses[i]-=minz;
+            }
+        }
         return finalVertices;
         // return finalVertexArr;
 
