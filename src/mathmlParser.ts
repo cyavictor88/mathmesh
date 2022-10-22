@@ -988,7 +988,7 @@ export class MMParser {
     }
 
     putinSceneArrayWithED( ) {
-        let xoffset = -33;
+        let xoffset = 0;//-33;
         let xscale = 0.6; // i manaully try and get width=0.6 to be the size of a char that has heigh = 1
         let finalVertexArr=[];
 
