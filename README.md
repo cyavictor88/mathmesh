@@ -23,7 +23,7 @@ you will get:
 to use in babylon:
 
 import {mathmesh} from "mathmesh";
-var verts = mathmesh("\\frace{99}{3}");
+var verts = mathmesh("\\frac{99}{3}");
 let customMesh = new Mesh("mymathmesh", scene);
 let vertexData = new VertexData();
 
