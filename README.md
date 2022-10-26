@@ -36,7 +36,7 @@ to use in babylon:
     fontmaterial.emissiveColor = new Color3(0, 1, 0);
     customMesh.material = fontmaterial;
 
-![alt text](https://github.com/cyavictor88/mathmesh/tree/master/pics/example_babylon.png?raw=true)
+![alt text](https://github.com/cyavictor88/mathmesh/blob/master/pics/example_babylon.png?raw=true)
 
 to use in three-js (@react-three/fiber):
 
@@ -52,7 +52,7 @@ to use in three-js (@react-three/fiber):
         /> 
     </bufferGeometry>
 
-![alt text](https://github.com/cyavictor88/mathmesh/tree/master/pics/example_threejs.png?raw=true)
+![alt text](https://github.com/cyavictor88/mathmesh/blob/master/pics/example_threejs.png?raw=true)
 
 Usage:
 
