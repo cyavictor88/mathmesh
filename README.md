@@ -7,9 +7,10 @@ What this package does:
 given a latex math string, it returns its positions and indices (for babylon)  and vertices (for threejs bufferGeometry) 
 
 ex:
-    import {mathmesh} from "mathmesh";
-    var mesh = mathmesh("\\frac{99}{3}");
-    console.log(mesh)
+
+      import {mathmesh} from "mathmesh";
+      var mesh = mathmesh("\\\int_{a}^{b}x^2 \\\,dx");
+      console.log(mesh)'
 
 you will get:
 
