@@ -2,7 +2,7 @@ NOTE:
 this package is farrrrr from being complete, but i think if it can help me, it might can help someone, too
 
 
-<h4>What this package does:</h4>
+<h3>What this package does:</h3>
 
 given a latex math string, it returns its positions and indices (for babylon)  and vertices (for threejs bufferGeometry) 
 
@@ -20,8 +20,8 @@ you will get:
       vertices: Float32Array()
     }
 
-
-to use in babylon:
+___
+<h4>to use in babylon:</h4>
 
     import {mathmesh} from "mathmesh";
     var verts = mathmesh("\\int_{a}^{b}x^2 \\,dx");
@@ -38,8 +38,8 @@ to use in babylon:
     customMesh.material = fontmaterial;
 
 ![alt text](https://github.com/cyavictor88/mathmesh/blob/master/pics/example_babylon.png?raw=true)
-
-to use in three-js (@react-three/fiber):
+---
+<h4>to use in threejs (@react-three/fiber):</h4>
 
     import {mathmesh} from "mathmesh";
     const vertices = mathmesh("\\int_{a}^{b}x^2 \\,dx").vertices;
@@ -54,10 +54,11 @@ to use in three-js (@react-three/fiber):
     </bufferGeometry>
 
 ![alt text](https://github.com/cyavictor88/mathmesh/blob/master/pics/example_threejs.png?raw=true)
+___
 
-Usage:
+<h4>Other Basic Usage:</h4>
 
-1.
+<h5>1.</h5>
 in some dir:
 
 $ npm init
@@ -70,7 +71,8 @@ in index.js:
 
 $ node index.js
 
-2.
+---
+<h5>2.</h5>
 in some dir:
 
 $ npm init
