@@ -1041,7 +1041,7 @@ export class MMParser {
 
 
         }
-        let finalVertices = {positions:[],indices:[]}; 
+        let finalVertices = {positions:[],indices:[],vertices:new Float32Array()}; 
         let aggreIndex = 0;
 
         for (let i = 0; i < finalVertexArr.length; i++) {
@@ -1097,6 +1097,14 @@ export class MMParser {
                 poses[i]-=minz;
             }
         }
+
+
+        const verticesThreeJSBufferGeo = new Float32Array( finalVertices.indices.map( ele => {
+            let indStart = 3*ele;
+            return [ finalVertices.positions[indStart],  finalVertices.positions[indStart+1], finalVertices.positions[indStart+2]];
+         } ).flat() );
+
+         finalVertices.vertices= verticesThreeJSBufferGeo;
         return finalVertices;
         // return finalVertexArr;
 

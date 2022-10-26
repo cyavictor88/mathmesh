@@ -1,13 +1,17 @@
 {
   "name": "mathmesh",
-  "version": "1.0.5",
-  "description": "to generate mathtext mesh for 3D engine like threejs or babylonjs",
+  "version": "1.0.7",
+  "description": "to generate mathtext mesh for threejs and babylonjs",
   "scripts": {
     "build": "webpack"
   },
   "main":"dist/mathmesh.js",
   "author": "cyavictor88 <cyavictor88@gmail.com>",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cyavictor88/mathmesh.git"
+  },
   "dependencies": {
     "fast-xml-parser": "^4.0.11",
     "katex": "^0.16.2",

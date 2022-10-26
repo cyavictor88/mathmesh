@@ -6,7 +6,7 @@ import { MMParser } from './mathmlParser';
 
 
 
-export function mathmesh(input):{positions:any[],indices:any[]} {
+export function mathmesh(input):{positions:number[],indices:number[],vertices:Float32Array} {
     // var element = document.createElement("p");
     // katex.render("zz = \\pm\\sqrt{a^2 + b^2}", element, {
     //     throwOnError: false,
