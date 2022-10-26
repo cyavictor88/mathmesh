@@ -11,13 +11,24 @@ module.exports = {
     // },
 
     output: {
-        library: 'mathmesh',
-        libraryTarget: 'umd',
+
+        library: {
+            name: 'mathmesh',
+            type: 'umd',
+            umdNamedDefine: true,
+        },
         filename: 'mathmesh.js',
-        auxiliaryComment: 'Test Comment',
         globalObject: 'this',
-        umdNamedDefine:true,
         clean: true,
+
+
+        // library: 'mathmesh',
+        // libraryTarget: 'umd',
+        // filename: 'mathmesh.js',
+        // auxiliaryComment: 'Test Comment',
+        // globalObject: 'this',
+        // umdNamedDefine:true,
+        // clean: true,
       },
     resolve: {
         extensions: [".tsx", ".ts", ".js"],
