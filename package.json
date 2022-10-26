@@ -1,11 +1,11 @@
 {
   "name": "mathmesh",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "to generate mathtext mesh for threejs and babylonjs",
   "scripts": {
     "build": "webpack"
   },
-  "main":"dist/mathmesh.js",
+  "main": "dist/mathmesh.js",
   "author": "cyavictor88 <cyavictor88@gmail.com>",
   "license": "ISC",
   "repository": {
