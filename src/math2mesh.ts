@@ -6,7 +6,7 @@ import { MMParser } from './mathmlParser';
 
 
 
-export function mathmesh(input):{positions:number[],indices:number[],vertices:Float32Array} {
+export function mathmesh(input:string):{positions:number[],indices:number[],vertices:Float32Array} {
     // var element = document.createElement("p");
     // katex.render("zz = \\pm\\sqrt{a^2 + b^2}", element, {
     //     throwOnError: false,
@@ -37,7 +37,7 @@ export function mathmesh(input):{positions:number[],indices:number[],vertices:Fl
     var mml:[] = jObj[0].span[0].math[0].semantics;
 
     let mmp: MMParser = new MMParser(mml);
-    var verts =mmp.putinSceneArrayWithED();
+    let verts:{positions:number[],indices:number[],vertices:Float32Array}  =mmp.putinSceneArrayWithED();
     return verts;
 
 

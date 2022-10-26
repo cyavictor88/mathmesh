@@ -988,7 +988,7 @@ export class MMParser {
 
     }
 
-    putinSceneArrayWithED( ) {
+    putinSceneArrayWithED( ):{positions:number[],indices:number[],vertices: Float32Array}{
         let xoffset = 0;//-33;
         let xscale = 0.6; // i manaully try and get width=0.6 to be the size of a char that has heigh = 1
         let finalVertexArr=[];
@@ -1041,7 +1041,7 @@ export class MMParser {
 
 
         }
-        let finalVertices = {positions:[],indices:[],vertices:new Float32Array()}; 
+        let finalVertices:{positions:number[],indices:number[],vertices: Float32Array} = {positions:[],indices:[],vertices:new Float32Array()}; 
         let aggreIndex = 0;
 
         for (let i = 0; i < finalVertexArr.length; i++) {
