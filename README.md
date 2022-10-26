@@ -9,7 +9,7 @@ given a latex math string, it returns its positions and indices (for babylon)  a
 ex:
 
       import {mathmesh} from "mathmesh";
-      var mesh = mathmesh("\\\int_{a}^{b}x^2 \\\,dx");
+      var mesh = mathmesh("\\int_{a}^{b}x^2 \\,dx");
       console.log(mesh)'
 
 you will get:
