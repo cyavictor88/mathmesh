@@ -2,7 +2,7 @@ NOTE:
 this package is farrrrr from being complete, but i think if it can help me, it might can help someone, too
 
 
-What this package does:
+<h4>What this package does:</h4>
 
 given a latex math string, it returns its positions and indices (for babylon)  and vertices (for threejs bufferGeometry) 
 
