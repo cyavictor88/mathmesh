@@ -3,12 +3,14 @@ const mathmesh = require('../dist/mathmesh.js');
 const drawMathmesh = require('./genpic.js');
 const app = express();
 const port = 8081;
-const rawstr = "qq=\\frac{99}{3}=\\frac{\\begin{bmatrix} a & b_{xyz} & c \\\\  d^{qp} & e & foo \\end{bmatrix}}{\\begin{bmatrix} a & c \\end{bmatrix}}=\\text{a b}=\\begin{pmatrix} annnn^y & b_{44}  \\\\ 5^5_3 & zzzz  \\end{pmatrix}=\\int_{a}^{b} f(x) \\, dx = \\begin{cases} \\textrm{true,} & \\textrm{if } 0 < x_u < 35^{kmm} \\\\ \\textrm{false,} & \\textrm{otherwise} x^y \\end{cases} = \\oint_V f(s) = \\int_{a}^{b} f(x) \\, dx  =\\sum_{n=1}^{\\infty}n=\\lim_{x \\to \\infty} sin(x)";
+var rawstr = "qq=\\frac{99}{3}=\\frac{\\begin{bmatrix} a & b_{xyz} & c \\\\  d^{qp} & e & foo \\end{bmatrix}}{\\begin{bmatrix} a & c \\end{bmatrix}}=\\text{a b}=\\begin{pmatrix} annnn^y & b_{44}  \\\\ 5^5_3 & zzzz  \\end{pmatrix}=\\int_{a}^{b} f(x) \\, dx = \\begin{cases} \\textrm{true,} & \\textrm{if } 0 < x_u < 35^{kmm} \\\\ \\textrm{false,} & \\textrm{otherwise} x^y \\end{cases} = \\oint_V f(s) = \\int_{a}^{b} f(x) \\, dx  =\\sum_{n=1}^{\\infty}n=\\lim_{x \\to \\infty} sin(x)";
+var rawstr = "\\int_{a}^{b}\\begin{bmatrix} m & efghij^n \\\\  \\frac{xssss}{sy} & k \\end{bmatrix} \\,dx";
+// var rawstr = "\\frac{tttx}{y}";
+const  verts = mathmesh.mathmesh(rawstr);
 
 
 app.get("/", (req, res) => {
 
-  const  verts = mathmesh.mathmesh(rawstr);
   const image = drawMathmesh(rawstr,verts );
   
   res.writeHead(

@@ -1,12 +1,6 @@
-//import { DefaultRenderingPipeline, RegisterMaterialPlugin, TimerState } from '@babylonjs/core';
-//import { Scene } from '@babylonjs/core/scene';
-//import { CommonShadowLightPropertyGridComponent } from '@babylonjs/inspector/components/actionTabs/tabs/propertyGrids/lights/commonShadowLightPropertyGridComponent';
 import * as lodash from 'lodash';
-// import { v4 as uuidv4 } from 'uuid';
-
 import { MathMlStringMesh ,TypeMesh} from './mathml2mesh';
 import { EleDim as ED } from './EleDim';
-import { number } from 'mathjs';
 
 export enum MEleType {
     Start = 0,
@@ -208,7 +202,6 @@ export class MMParser {
     public tableStacksofStackX: MMFlatStruct[][];
     public tableTree: LBlock;
     public lvlStack: LBlock[];
-    // public tableTree
 
     public uuidcnt:number;
 
@@ -228,14 +221,18 @@ export class MMParser {
         this.assembleMEleArrByRecuOnObject("mrow", this.mathmlXml, 0, this.parsedStringArr);
 
 
+
         this.assembleGrandMTagNode();
 
+        
+        
+
+
         this.insertFractionHelper();
-
-
+       
+       
         
         this.assembleGrandFlatArr(this.grandMTagNode);
-
 
 
         this.assembleGrandFlatWithCloseArr();
@@ -257,12 +254,16 @@ export class MMParser {
 
         this.fenceAdjustment();
         this.mfracAdjustment();
+
+
+
          this.alignVertically();
-         this.moveAllby(-50,5);
+        // this.moveAllby(-50,5);
 
 
 
     }
+
 
     moveAllby(dx:number,dy:number){
         this.lvlStack[0].edim.spatialTrans({delx:dx,dely:dy},1);
@@ -282,8 +283,43 @@ export class MMParser {
             }
             if(item.type==LBlockType.mfrac)//mfracmid
             { 
+
                 var newMTag: MTag = { type: LBlockType.mfracmid, lvl: item.children[0].lvl, children: [] ,text:'-'};
                 item.children.splice(0,0,newMTag);//insert "-" at beginning so the style is same with msubsup/munderover
+
+
+                // add a space after mfrac so, the mfracmid can end properly
+                var originalItemParent = item.parent;
+                var newMTagRow:MTag = { type: LBlockType.mrow, lvl: item.lvl, children: [] , parent:originalItemParent};
+                var newMTagEndSpace: MTag = { type: LBlockType.mi, lvl: item.lvl+1, children: [] ,text:' ', parent:newMTagRow};
+                var newMTagStartSpace: MTag = { type: LBlockType.mi, lvl: item.lvl+1, children: [] ,text:' ', parent:newMTagRow};
+                newMTagRow.children=[newMTagStartSpace,item,newMTagEndSpace];
+                item.parent = newMTagRow;
+
+                for (let j = 0; j < originalItemParent.children.length; j++) {
+                    const element = originalItemParent.children[j];
+                    if(element==item) 
+                    {
+                        originalItemParent.children[j]=newMTagRow;
+                        break;
+                    }
+                }
+
+
+                let curMfracStack=[item];
+                while (curMfracStack.length>0)
+                {
+                    let mfracitem = curMfracStack.shift();
+                    mfracitem.lvl+=1;
+                    if(mfracitem.children!=null && mfracitem.children.length>0)
+                    {
+                        for( let i=0;i<mfracitem.children.length;i++)
+                        {
+                            curMfracStack.push(mfracitem.children[i])
+                        }
+                    }
+                }
+                
             }
         }
     }
@@ -852,8 +888,10 @@ export class MMParser {
                     // // webpack console.log("moving ",this.grandFlatArr[j].text);
                     this.grandFlatArr[j].refLblock.edim.spatialTransSingleEle({delx:0.8,dely:0},1);
                 }
-                block.children[0].edim.dim.xs[1]=this.lvlStack[lvlidx+1].edim.dim.xs[0]+0.8; //block.children[0] is the mfracmid
-                // block.children[0].edim.dim.xs[1]+=1; //block.children[0] is the mfracmid
+                block.children[0].edim.dim.xs[1]=this.lvlStack[lvlidx+1].edim.dim.xs[1]-0.2; //block.children[0] is the mfracmid
+                block.children[0].edim.dim.xs[0]=this.lvlStack[lvlidx-1].edim.dim.xs[0]+0.2; //block.children[0] is the mfracmid
+                // block.children[0].edim.dim.xs[1]+=1; 
+                //block.children[0] is the mfracmid
                 for(let j=this.lvlStack[lvlidx+1].idxInArray;j<this.grandFlatArr.length;j++)
                 {
                     // // webpack console.log("moving ",this.grandFlatArr[j].text);
@@ -988,7 +1026,7 @@ export class MMParser {
 
     }
 
-    putinSceneArrayWithED( ):{positions:number[],indices:number[],vertices: Float32Array}{
+    generateMathmesh():{positions:number[],indices:number[],vertices: Float32Array}{
         let xoffset = 0;//-33;
         let xscale = 0.6; // i manaully try and get width=0.6 to be the size of a char that has heigh = 1
         let finalVertexArr=[];
