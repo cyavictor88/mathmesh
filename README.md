@@ -1,6 +1,10 @@
 NOTE: 
 this package is farrrrr from being complete, but i think if it can help me, it might can help someone, too
 
+To use:
+
+        npm install mathmesh
+
 
 <h3>What this package does:</h3>
 
@@ -57,6 +61,11 @@ ___
 ![alt text](https://github.com/cyavictor88/mathmesh/blob/master/pics/example_threejs.png?raw=true)
 ___
 
+
+It works in create-react-app dev and production build.
+It works in vite react dev, BUT DOESNT WORK in production build (Error is some type error, I think is because my messy work).
+
+___
 <h4>Other Basic Usage:</h4>
 
 <h5>1.</h5>
@@ -88,3 +97,17 @@ in index.js:
 $ node index.js
 
 
+___
+
+<h3>Local testing using Node Canvas</h3>
+
+if you want build from source and to see how it draw out locally , you can simply:
+
+1. Clone this repo
+2. npm install
+3. npm run build
+4. change the "rawstr" in test/server.js if you want
+5. run $ node test/server.js (or better yet, $ npx nodemon test/server.js)
+6. open localhost:8081
+7. you should see a picture:
+![alt text](https://github.com/cyavictor88/mathmesh/blob/master/pics/example_nodecanvas.png?raw=true)
