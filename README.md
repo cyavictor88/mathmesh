@@ -112,3 +112,9 @@ if you want build from source and to see how it draw out locally , you can simpl
 6. open localhost:8081
 7. you should see a picture:
 ![alt text](https://github.com/cyavictor88/mathmesh/blob/master/pics/example_nodecanvas.png?raw=true)
+
+___
+
+<h3>Special Thanks</h3>
+
+Won't able to do it without this amazing repo: https://github.com/fetisov/ttf2mesh
