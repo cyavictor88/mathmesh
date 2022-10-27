@@ -115,6 +115,11 @@ if you want build from source and to see how it draw out locally , you can simpl
 
 ___
 
+<h3>Remarks:</h3>
+If you dig into the repo just a little bit, you can quickly notice I suck at git/npm workflow and coding. For example, I commit and push wayyy too frequent. And for npm versioning, I also publish wayyy too frequent. The code itself is also a mess. I think only I can read it coherently. I will try to improve and fix it. "IF" one day everything is up to standard and is production ready. I will probably just create a new repo and new npm package name, leaving this mess behind. i dunno... thats prob also not good software engineering. 
+___
+
+
 <h3>Special Thanks</h3>
 
 Won't able to do it without this amazing repo: https://github.com/fetisov/ttf2mesh
