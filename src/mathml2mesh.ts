@@ -51,6 +51,7 @@ export class MathMlStringMesh {
     meshtype:TypeMesh;
 
     finalVertexArr:any[];
+    hasMesh:boolean;
     // dashMesh: TMeshJson[];
 
     constructor(mString: string,  box: { x0: number, x1: number, y0: number, y1: number },scale:number,meshtype:TypeMesh) {
@@ -60,6 +61,7 @@ export class MathMlStringMesh {
         this.jsonMeshes = [];
         this.meshtype=meshtype;
         this.finalVertexArr=[];
+        this.hasMesh = true;
 
         if(meshtype==TypeMesh.TMmfrac)
         {
@@ -101,17 +103,17 @@ export class MathMlStringMesh {
         // will break things tho// let spacescode = ["0020","00a0","1680","180e","2000","2001","2002","2003","2004","2005","2006","2007","2008","2009","200a","200b","202f","205f","3000","feff"]
         // let spaces_or_null_code = ["00a0","0020","2061"];
 
-        for (let i = 0; i < mString.length; i++) {
-            let dizcode=mString[i].charCodeAt(0).toString(16).padStart(4, "0");
+        // for (let i = 0; i < mString.length; i++) {
+            let dizcode=mString[0].charCodeAt(0).toString(16).padStart(4, "0");
                 
-            if (dizcode==="00a0")return; //	NO-BREAK SPACE
-            if (dizcode==="0020")return; //normal space
-            if (dizcode==="2061")return; //null 
+            if (dizcode==="00a0"){this.hasMesh=false; return;} //NO-BREAK SPACE
+            if (dizcode==="0020"){this.hasMesh=false; return;} //normal space
+            if (dizcode==="2061"){this.hasMesh=false; return;} //null 
            
 
             let key = "U+" + dizcode;
             let newmesh: TMeshJson = {
-                char: mString[i],
+                char: mString[0],
                 uni: key,
                 verts: cloneDeep(cjson[key].verts),
                 tris: cjson[key].tris,
@@ -128,7 +130,7 @@ export class MathMlStringMesh {
                 let ystart=-0.3;
                 let xstart=0;
                 let newmesh: TMeshJson = {
-                    char: mString[i],
+                    char: mString[0],
                     uni: key,
                     verts: [xstart, ystart, 0, xstart, ystart + ylen, 0, xstart+xlen, ystart + ylen, 0, xstart+xlen, ystart, 0],
                     tris: [0, 1, 2, 3, 0, 2],
@@ -137,7 +139,7 @@ export class MathMlStringMesh {
                 this.jsonMeshes.push(newmesh);
             }
 
-        };
+        // };
 
         let xoffset = 0;
         for (let i = 0; i < this.jsonMeshes.length; i++) {

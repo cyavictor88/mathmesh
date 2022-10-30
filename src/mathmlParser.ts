@@ -1044,12 +1044,17 @@ export class MMParser {
                         let box = { x0: xscale*(eledim.xs[0]  + xoffset ) , x1: xscale*(eledim.xs[1]  + xoffset )  , y0: eledim.ys[0], y1: -1 };
                         // webpack console.log("putint mfracmid")
                         // webpack console.log(box);
-                        let mathtxts = new MathMlStringMesh("mfracmid", box, eledim.scale,TypeMesh.TMmfrac);
-                        let vertexArr =mathtxts.toTransedMesh();
-                        for(let j=0; j<vertexArr.length;j++)
+                        let mathtxtMesh = new MathMlStringMesh("mfracmid", box, eledim.scale,TypeMesh.TMmfrac);
+
+                        if(mathtxtMesh.hasMesh)
                         {
-                            finalVertexArr.push(vertexArr[j]);
+                            let vertexArr =mathtxtMesh.toTransedMesh();
+                            for(let j=0; j<vertexArr.length;j++)
+                            {
+                                finalVertexArr.push(vertexArr[j]);
+                            }
                         }
+                       
                 }
                 else
                 
@@ -1061,15 +1066,18 @@ export class MMParser {
                         const onechar = ele.text.toString()[j];
                         
                         let box = { x0: xscale*(eledim.xs[0] + j * xinterval + xoffset ) , x1: -1, y0: eledim.ys[0], y1: -1 };
-                        let mathtxts = new MathMlStringMesh(onechar,  box, eledim.scale,TypeMesh.TMChar);
-    
-                       
-                        let vertexArr =mathtxts.toTransedMesh();
-
-                        for(let k=0; k<vertexArr.length;k++)
+                        let mathtxtMesh = new MathMlStringMesh(onechar,  box, eledim.scale,TypeMesh.TMChar);
+                        if(mathtxtMesh.hasMesh)
                         {
-                            finalVertexArr.push(vertexArr[k]);
+                            let vertexArr =mathtxtMesh.toTransedMesh();
+
+                            for(let k=0; k<vertexArr.length;k++)
+                            {
+                                finalVertexArr.push(vertexArr[k]);
+                            }
                         }
+                       
+                       
                     }
                 }
                
