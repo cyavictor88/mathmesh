@@ -1,6 +1,8 @@
 NOTE: 
 this package is farrrrr from being complete, but i think if it can help me, it might can help someone, too
 
+It doesn't support sqrt / nth root 
+
 To use:
 
         npm install mathmesh

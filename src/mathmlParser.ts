@@ -265,6 +265,7 @@ export class MMParser {
     }
 
 
+
     moveAllby(dx:number,dy:number){
         this.lvlStack[0].edim.spatialTrans({delx:dx,dely:dy},1);
     }
@@ -285,7 +286,7 @@ export class MMParser {
             { 
 
                 var newMTag: MTag = { type: LBlockType.mfracmid, lvl: item.children[0].lvl, children: [] ,text:'-'};
-                item.children.splice(0,0,newMTag);//insert "-" at beginning so the style is same with msubsup/munderover
+                item.children.splice(0,0,newMTag);//insert "-" at beginning so the style is same with msubsup/munderover (mid / down / up)
 
 
                 // add a space after mfrac so, the mfracmid can end properly
@@ -296,6 +297,7 @@ export class MMParser {
                 newMTagRow.children=[newMTagStartSpace,item,newMTagEndSpace];
                 item.parent = newMTagRow;
 
+                //replace item's place with the new row in parent's children list
                 for (let j = 0; j < originalItemParent.children.length; j++) {
                     const element = originalItemParent.children[j];
                     if(element==item) 
@@ -305,7 +307,7 @@ export class MMParser {
                     }
                 }
 
-
+                // increase lvl by one for all children of mfracitem recursively
                 let curMfracStack=[item];
                 while (curMfracStack.length>0)
                 {
@@ -867,6 +869,7 @@ export class MMParser {
 
     mfracAdjustment()
     {
+
         let tableBlock:LBlock; 
         for(let i=0;i<this.grandFlatArr.length;i++)
         {
@@ -883,31 +886,36 @@ export class MMParser {
                         break;
                     }
                 }
-                for(let j=this.lvlStack[lvlidx].idxInArray;j<this.grandFlatArr.length;j++)
-                {
-                    // // webpack console.log("moving ",this.grandFlatArr[j].text);
-                    this.grandFlatArr[j].refLblock.edim.spatialTransSingleEle({delx:0.8,dely:0},1);
-                }
-                block.children[0].edim.dim.xs[1]=this.lvlStack[lvlidx+1].edim.dim.xs[1]-0.2; //block.children[0] is the mfracmid
-                block.children[0].edim.dim.xs[0]=this.lvlStack[lvlidx-1].edim.dim.xs[0]+0.2; //block.children[0] is the mfracmid
+                // for(let j=this.lvlStack[lvlidx].idxInArray;j<this.grandFlatArr.length;j++)
+                // {
+                //     // // webpack console.log("moving ",this.grandFlatArr[j].text);
+                //     this.grandFlatArr[j].refLblock.edim.spatialTransSingleEle({delx:0.8,dely:0},1);
+                // }
+                block.children[0].edim.dim.xs[0]=this.lvlStack[lvlidx-1].edim.dim.xs[0];//+0.2; //block.children[0] is the mfracmid
+                block.children[0].edim.dim.xs[1]=this.lvlStack[lvlidx+1].edim.dim.xs[1];//-0.2; //block.children[0] is the mfracmid
                 // block.children[0].edim.dim.xs[1]+=1; 
                 //block.children[0] is the mfracmid
-                for(let j=this.lvlStack[lvlidx+1].idxInArray;j<this.grandFlatArr.length;j++)
-                {
-                    // // webpack console.log("moving ",this.grandFlatArr[j].text);
-                    this.grandFlatArr[j].refLblock.edim.spatialTransSingleEle({delx:1,dely:0},1);
-                }
+
+                // for(let j=this.lvlStack[lvlidx+1].idxInArray;j<this.grandFlatArr.length;j++)
+                // {
+                //     // // webpack console.log("moving ",this.grandFlatArr[j].text);
+                //     this.grandFlatArr[j].refLblock.edim.spatialTransSingleEle({delx:1,dely:0},1);
+                // }
 
                 // fix bbox for parents
-                let parent_to_root = block.parent;
-                let lvltrs = block.lvl;
-                while(parent_to_root!=null && lvltrs>0)
-                {
-                    let delx=1+0.8;
-                    parent_to_root.edim.dim.xs[1]+=delx;
-                    parent_to_root=parent_to_root.parent;
-                    lvltrs-=1;
-                }
+                // let parent_to_root = block.parent;
+                // let lvltrs = block.lvl;
+                // while(parent_to_root!=null && lvltrs>0)
+                // {
+                //     let delx=1+0.8;
+                //     parent_to_root.edim.dim.xs[1]+=delx;
+                //     parent_to_root=parent_to_root.parent;
+                //     lvltrs-=1;
+                // }
+
+
+                //fix bbox for block
+
             }
         }
 
