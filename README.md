@@ -109,7 +109,7 @@ if you want build from source and to see how it draw out locally , you can simpl
 1. Clone this repo
 2. npm install
 3. npm run build
-4. change the "rawstr" in test/server.js if you want
+4. change the "rawstr" variable in test/server.js if you want
 5. run $ node test/server.js (or better yet, $ npx nodemon test/server.js)
 6. open localhost:8081
 7. you should see a picture:

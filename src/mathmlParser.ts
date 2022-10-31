@@ -257,7 +257,7 @@ export class MMParser {
 
 
 
-         this.alignVertically();
+        this.alignVertically();
         // this.moveAllby(-50,5);
 
 
@@ -891,8 +891,23 @@ export class MMParser {
                 //     // // webpack console.log("moving ",this.grandFlatArr[j].text);
                 //     this.grandFlatArr[j].refLblock.edim.spatialTransSingleEle({delx:0.8,dely:0},1);
                 // }
+
+
+
+
                 block.children[0].edim.dim.xs[0]=this.lvlStack[lvlidx-1].edim.dim.xs[0];//+0.2; //block.children[0] is the mfracmid
                 block.children[0].edim.dim.xs[1]=this.lvlStack[lvlidx+1].edim.dim.xs[1];//-0.2; //block.children[0] is the mfracmid
+                
+                let numeratorWidth = block.children[1].edim.dim.xs[1] - block.children[1].edim.dim.xs[0];
+                let denomiatorWidth = block.children[2].edim.dim.xs[1] - block.children[2].edim.dim.xs[0];
+                let fracmidWidth = block.children[0].edim.dim.xs[1] - block.children[0].edim.dim.xs[0];
+
+                let numeratorCenterPoint =  (numeratorWidth/2 + block.children[1].edim.dim.xs[0]);
+                let denomiatorCenterPoint =  (denomiatorWidth/2 + block.children[2].edim.dim.xs[0]);
+                let fracmidCenterPoint = (fracmidWidth/2 + block.children[0].edim.dim.xs[0]);
+
+                block.children[1].edim.spatialTrans({delx:  Math.round(fracmidCenterPoint-numeratorCenterPoint),dely:0 },1);
+                block.children[2].edim.spatialTrans({delx:  Math.round(fracmidCenterPoint-denomiatorCenterPoint),dely:0 },1);
                 // block.children[0].edim.dim.xs[1]+=1; 
                 //block.children[0] is the mfracmid
 
