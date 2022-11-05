@@ -76,6 +76,9 @@ export class MathMlStringMesh {
                 verts: [xstart, ystart, 0, xstart, ystart + ylen, 0, xstart+xlen, ystart + ylen, 0, xstart+xlen, ystart, 0],
                 // tris: [0, 1, 2, 3, 0, 2], //clockwise
                 tris: [0, 2, 1, 3, 2, 0], //counter-clockwise
+                // 1------2
+                // |      |
+                // 0------3
                 bbox: [0, 0, 0, 0]
             };
             this.jsonMeshes.push(newmesh);
@@ -93,7 +96,10 @@ export class MathMlStringMesh {
                 char: 'D',
                 uni: key,
                 verts: [xstart, ystart, 0, xstart, ystart + ylen, 0, xstart+xlen, ystart + ylen, 0, xstart+xlen, ystart, 0],
-                tris: [0, 1, 2, 3, 0, 2],
+                tris: [0, 2, 1, 3, 2, 0],
+                // 1------2
+                // |      |
+                // 0------3
                 bbox: [0, 0, 0, 0]
             };
             this.jsonMeshes.push(newmesh);

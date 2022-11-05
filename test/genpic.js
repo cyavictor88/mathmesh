@@ -1,5 +1,74 @@
 const { createCanvas } = require('canvas');
 
+
+function drawMathMeshWithBoundingBox(verts,bbox) {
+  const mathmeshObj = preprocessMathmeshObj(verts);
+  const triangles = mathmeshObj.triangles;
+  const maxx = mathmeshObj.maxx;
+  const maxy = mathmeshObj.maxy;
+  const miny = mathmeshObj.miny;
+
+  //creates the html canvas object
+  const heightPadding = 500;
+  const widthPadding = 50;
+  const canvas = createCanvas(maxx + widthPadding, maxy - miny + heightPadding);
+  const context = canvas.getContext("2d");
+
+  context.beginPath();
+
+
+
+  if(bbox.vertices.length>0)
+  {
+    const trianglesbbox = preprocessMathmeshObj(bbox).triangles;
+    context.strokeStyle = 'green';
+    context.lineWidth = 1;
+    // 1------2
+    // |      |
+    // 0------3
+    // bbox trianlges: [0, 2, 1, 3, 2, 0],
+
+ 
+    trianglesbbox.forEach((tri ,i)=> {
+      if(i%2==0)
+      {
+        // drawing 0 -> 1 -> 2 from [0, 2, 1,]
+        context.moveTo(tri[0][0], tri[0][1] + heightPadding / 2 + (maxy - miny) / 2);
+        context.lineTo(tri[2][0], tri[2][1] + heightPadding / 2 + (maxy - miny) / 2);
+        context.lineTo(tri[1][0], tri[1][1] + heightPadding / 2 + (maxy - miny) / 2);
+      }
+      else
+      {
+        // drawing 0 -> 3 -> 2 from [3, 2, 0]
+        context.moveTo(tri[2][0], tri[2][1] + heightPadding / 2 + (maxy - miny) / 2);
+        context.lineTo(tri[0][0], tri[0][1] + heightPadding / 2 + (maxy - miny) / 2);
+        context.lineTo(tri[1][0], tri[1][1] + heightPadding / 2 + (maxy - miny) / 2);
+      }
+        
+    });
+    context.stroke();
+  }
+  
+
+  context.beginPath();
+  triangles.forEach(tri => {
+      context.moveTo(tri[0][0], tri[0][1] + heightPadding / 2 + (maxy - miny) / 2);
+      context.lineTo(tri[1][0], tri[1][1] + heightPadding / 2 + (maxy - miny) / 2);
+      context.lineTo(tri[2][0], tri[2][1] + heightPadding / 2 + (maxy - miny) / 2);
+      context.lineTo(tri[0][0], tri[0][1] + heightPadding / 2 + (maxy - miny) / 2);
+  });
+
+
+
+  context.fillStyle = "#000000";
+  context.fill();
+  return canvas.toBuffer();
+
+
+};
+
+
+
 function drawMathmesh(input, verts ) {
 
     const mathmeshObj = preprocessMathmeshObj(verts);
@@ -78,4 +147,20 @@ const preprocessMathmeshObj = function(verts){
   }
 
 
-module.exports = drawMathmesh;
+// module.exports = drawMathmesh;
+
+module.exports = function (rawstr, vertices, bboxvertices={vertices:[]}) {
+  this.rawstr = rawstr;
+  this.vertices = vertices;
+  this.bboxvertices = bboxvertices;
+
+  this.drawMathMeshWithBoundingBox =function(){
+    return drawMathMeshWithBoundingBox(this.vertices,this.bboxvertices);
+  }
+
+  this.drawMathmesh = function () { 
+      return drawMathmesh(this.rawstr,this.vertices);
+  };
+
+
+}

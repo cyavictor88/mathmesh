@@ -1017,7 +1017,7 @@ export class MMParser {
 
 
     }
-    putinScenceBBoxWithlvl( lvlnum:number)
+    generateBoundingBoxAtLevel(lvlnum:number):{positions:number[],indices:number[],vertices: Float32Array}
     {
         // let leafLvl = 0;
         // for (let i = 0; i < this.lvlStack.length; i++) {
@@ -1026,7 +1026,7 @@ export class MMParser {
         // lvlnum = leafLvl;
         let finalVertexArr=[];
 
-        let xoffset = -33;
+        let xoffset = 0;
         let xscale = 0.6; // i manaully try and get width=0.6 to be the size of a char that has heigh = 1
         for (let i = 0; i < this.lvlStack.length; i++) {
             const ele = this.lvlStack[i];
@@ -1045,71 +1045,12 @@ export class MMParser {
 
         }
 
-        return finalVertexArr;
+        return this.prepareFinalVertices(finalVertexArr);
 
     }
 
-    generateMathmesh():{positions:number[],indices:number[],vertices: Float32Array}{
-        let xoffset = 0;//-33;
-        let xscale = 0.6; // i manaully try and get width=0.6 to be the size of a char that has heigh = 1
-        let finalVertexArr=[];
-
-
-        for (let i = 0; i < this.lvlStack.length; i++) {
-            const ele = this.lvlStack[i];
-
-            if (ele.text != null) {
-
-                if(ele.type==LBlockType.mfracmid)
-                {       
-                        let eledim = ele.edim.dim;
-                        const onechar = ele.text.toString();
-                        let box = { x0: xscale*(eledim.xs[0]  + xoffset ) , x1: xscale*(eledim.xs[1]  + xoffset )  , y0: eledim.ys[0], y1: -1 };
-                        // webpack console.log("putint mfracmid")
-                        // webpack console.log(box);
-                        let mathtxtMesh = new MathMlStringMesh("mfracmid", box, eledim.scale,TypeMesh.TMmfrac);
-
-                        if(mathtxtMesh.hasMesh)
-                        {
-                            let vertexArr =mathtxtMesh.toTransedMesh();
-                            for(let j=0; j<vertexArr.length;j++)
-                            {
-                                finalVertexArr.push(vertexArr[j]);
-                            }
-                        }
-                       
-                }
-                else
-                
-                {      
-
-                    let eledim = ele.edim.dim;
-                    let xinterval = (eledim.xs[1] - eledim.xs[0]) / ele.text.toString().length;
-                    for (let j= 0; j< ele.text.toString().length; j++) {
-                        const onechar = ele.text.toString()[j];
-                        
-                        let box = { x0: xscale*(eledim.xs[0] + j * xinterval + xoffset ) , x1: -1, y0: eledim.ys[0], y1: -1 };
-                        let mathtxtMesh = new MathMlStringMesh(onechar,  box, eledim.scale,TypeMesh.TMChar);
-                        if(mathtxtMesh.hasMesh)
-                        {
-                            let vertexArr =mathtxtMesh.toTransedMesh();
-
-                            for(let k=0; k<vertexArr.length;k++)
-                            {
-                                finalVertexArr.push(vertexArr[k]);
-                            }
-                        }
-                       
-                       
-                    }
-                }
-               
-
-                // let mathtxts = new MathText.MathString(text, scene, layerMask);
-            }
-
-
-        }
+    prepareFinalVertices(finalVertexArr:any[]):{positions:number[],indices:number[],vertices: Float32Array}
+    {
         let finalVertices:{positions:number[],indices:number[],vertices: Float32Array} = {positions:[],indices:[],vertices:new Float32Array()}; 
         let aggreIndex = 0;
 
@@ -1175,8 +1116,72 @@ export class MMParser {
 
          finalVertices.vertices= verticesThreeJSBufferGeo;
         return finalVertices;
-        // return finalVertexArr;
 
+    }
+
+    generateMathmesh():{positions:number[],indices:number[],vertices: Float32Array}{
+        let xoffset = 0;//-33;
+        let xscale = 0.6; // i manaully try and get width=0.6 to be the size of a char that has heigh = 1
+        let finalVertexArr=[];
+
+
+        for (let i = 0; i < this.lvlStack.length; i++) {
+            const ele = this.lvlStack[i];
+
+            if (ele.text != null) {
+
+                if(ele.type==LBlockType.mfracmid)
+                {       
+                        let eledim = ele.edim.dim;
+                        const onechar = ele.text.toString();
+                        let box = { x0: xscale*(eledim.xs[0]  + xoffset ) , x1: xscale*(eledim.xs[1]  + xoffset )  , y0: eledim.ys[0], y1: -1 };
+                        // webpack console.log("putint mfracmid")
+                        // webpack console.log(box);
+                        let mathtxtMesh = new MathMlStringMesh("mfracmid", box, eledim.scale,TypeMesh.TMmfrac);
+
+                        if(mathtxtMesh.hasMesh)
+                        {
+                            let vertexArr =mathtxtMesh.toTransedMesh();
+                            for(let j=0; j<vertexArr.length;j++)
+                            {
+                                finalVertexArr.push(vertexArr[j]);
+                            }
+                        }
+                       
+                }
+                else
+                
+                {      
+
+                    let eledim = ele.edim.dim;
+                    let xinterval = (eledim.xs[1] - eledim.xs[0]) / ele.text.toString().length;
+                    for (let j= 0; j< ele.text.toString().length; j++) {
+                        const onechar = ele.text.toString()[j];
+                        
+                        let box = { x0: xscale*(eledim.xs[0] + j * xinterval + xoffset ) , x1: -1, y0: eledim.ys[0], y1: -1 };
+                        let mathtxtMesh = new MathMlStringMesh(onechar,  box, eledim.scale,TypeMesh.TMChar);
+                        if(mathtxtMesh.hasMesh)
+                        {
+                            let vertexArr =mathtxtMesh.toTransedMesh();
+
+                            for(let k=0; k<vertexArr.length;k++)
+                            {
+                                finalVertexArr.push(vertexArr[k]);
+                            }
+                        }
+                       
+                       
+                    }
+                }
+               
+
+                // let mathtxts = new MathText.MathString(text, scene, layerMask);
+            }
+
+
+        }
+        
+        return this.prepareFinalVertices(finalVertexArr);
     }
 
     iterateGrandBlockTree(block: LBlock, pad: string) {

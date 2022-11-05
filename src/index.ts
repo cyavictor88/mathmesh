@@ -1,4 +1,4 @@
 
-import { mathmesh } from "./math2mesh";
+import { mathmesh ,mathmeshBox} from "./math2mesh";
 
-export { mathmesh };
+export { mathmesh ,mathmeshBox};
