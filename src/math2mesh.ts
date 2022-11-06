@@ -12,7 +12,7 @@ export function mathmeshObj(input:string):MMParser {
         output: "mathml",
         displayMode: true,
     });
-   // console.log(html);
+   console.log(html);
     var options = {
         "preserveOrder": true,
         ignoreAttributes: false,

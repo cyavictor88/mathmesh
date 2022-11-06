@@ -191,9 +191,9 @@ export class EDim {
         let eleinArray = this.grandFlatArr[block.idxInArray];
             // //webpack console.log(block.lvl, block.type,block.text);
 
-        // if(eleinArray.attriArr!=null)
+        // if(eleinArray.attriArr!=null!=null)
         // {
-        //     eleinArray.attriArr.forEach(element => {
+        //     eleinArray.attriArr!=null.forEach(element => {
         //         if(element.name==='fence')
         //         {
         //             //webpack console.log(block.lvl, block.type);
@@ -289,6 +289,7 @@ export class EDim {
             let dizscale = 1;
             if(textstr==="∮" || textstr==="∫") // make integral symbol bigger
                 dizscale = 1.5;
+          
             return { scale: dizscale, xs: [0, textstr.length * dizscale], ys: [0.5-dizscale/2, 0.5+dizscale/2], text: textstr };
         }
 
