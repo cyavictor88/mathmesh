@@ -1017,6 +1017,37 @@ export class MMParser {
 
 
     }
+    generateBoundingBoxAtText():{positions:number[],indices:number[],vertices: Float32Array}
+    {
+        // let leafLvl = 0;
+        // for (let i = 0; i < this.lvlStack.length; i++) {
+        //     if(leafLvl<this.lvlStack[i].lvl)leafLvl=this.lvlStack[i].lvl;
+        // }
+        // lvlnum = leafLvl;
+        let finalVertexArr=[];
+
+        let xoffset = 0;
+        let xscale = 0.6; // i manaully try and get width=0.6 to be the size of a char that has heigh = 1
+        for (let i = 0; i < this.lvlStack.length; i++) {
+            const ele = this.lvlStack[i];
+
+            if (ele.text!=null) {
+                let eledim = ele.edim.dim;
+                let box = { x0: xscale*(eledim.xs[0]  + xoffset ) , x1: xscale*(eledim.xs[1]  + xoffset )  , y0: eledim.ys[0], y1: eledim.ys[1] };
+                let mathtxts = new MathMlStringMesh("bbox", box, eledim.scale,TypeMesh.TMbbox);
+                let vertexArr =mathtxts.toTransedMesh();
+
+                for(let j=0; j<vertexArr.length;j++)
+                {
+                    finalVertexArr.push(vertexArr[j]);
+                }
+            }
+
+        }
+
+        return this.prepareFinalVertices(finalVertexArr);
+
+    }
     generateBoundingBoxAtLevel(lvlnum:number):{positions:number[],indices:number[],vertices: Float32Array}
     {
         // let leafLvl = 0;

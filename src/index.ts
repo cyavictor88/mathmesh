@@ -1,4 +1,4 @@
 
-import { mathmesh ,mathmeshBox} from "./math2mesh";
+import { mathmesh ,mathmeshBoxAtLevel,mathmeshObj} from "./math2mesh";
 
-export { mathmesh ,mathmeshBox};
+export { mathmesh ,mathmeshBoxAtLevel,mathmeshObj};
