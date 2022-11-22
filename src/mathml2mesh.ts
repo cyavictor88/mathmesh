@@ -3,11 +3,15 @@ import {Matrix , multiply, identity,index ,matrix} from 'mathjs';
 import {cloneDeep} from 'lodash';
 
 // var cjson = require('../ubuntu-r.json');
-var cjson = require('./assets/julia-r.json');
-// import juliar from '../assets/julia-r.json';
-
+// var cjson = require('./assets/julia-r.json');
+import  cjson from './assets/julia-r-cleaned.json' ;
+// const cjson= JSON.parse(cjsonstr)
+// import cjson from './assets/julia-r.json';
 // var cjson=juliar;
 // var cjson={2:3};
+
+
+
 type TMeshJson = {
     char: string;
     uni: string;
@@ -30,12 +34,22 @@ export enum TypeMesh {
     TMmfrac=2,
 } 
 
-let dashkey = "U+" + "-".charCodeAt(0).toString(16).padStart(4, "0");
+let dashkey = ("U+" + "-".charCodeAt(0).toString(16).padStart(4, "0")) as string;
+
+interface cjsoninfo {
+    name: keyof typeof cjson;
+    x: Array<number>;
+    y: Array<number>;
+    type: string;
+    mode: string;
+}
+
 let dash: TMeshJson = {
     char: dashkey,
     uni: dashkey,
-    verts: cloneDeep(cjson[dashkey].verts),
-    tris: cjson[dashkey].tris,
+    verts: cloneDeep(cjson[dashkey as keyof typeof cjson].verts),
+    // tris: cjson[dashkey].tris,
+    tris: cjson[dashkey as keyof typeof cjson].tris,
     bbox: [0, 0, 0, 0]
 };
 
@@ -121,8 +135,8 @@ export class MathMlStringMesh {
             let newmesh: TMeshJson = {
                 char: mString[0],
                 uni: key,
-                verts: cloneDeep(cjson[key].verts),
-                tris: cjson[key].tris,
+                verts: cloneDeep(cjson[key as keyof typeof cjson].verts),
+                tris: cjson[key as keyof typeof cjson].tris,
                 bbox: [0, 0, 0, 0]
             };
             this.jsonMeshes.push(newmesh);
@@ -194,13 +208,13 @@ export class MathMlStringMesh {
        
         let transMat = multiply(identity(4), scale.x) as Matrix;
         transMat.subset(index([0, 1, 2], [3]), [[trans.x], [trans.y], [trans.z]]);
-        var transedPoses = [];
+        var transedPoses:any[] = [];
 
         for (let i = 0; i < posArray.length; i += 3) {
             let tmpmat = multiply(transMat, matrix([[posArray[i]], [posArray[i+1]], [posArray[i+2]],[1] ])) as Matrix;
             for (let j = 0; j < 3; j++)
             {
-                transedPoses.push(tmpmat.get([j, 0]) as number);
+                transedPoses.push(  tmpmat.get([j, 0]) as number);
             }
 
         }
@@ -210,11 +224,12 @@ export class MathMlStringMesh {
 
     public toTransedMesh() {
 
+        
         let trans = { x: this.stringBoundingBox.x0, y: this.stringBoundingBox.y0 , z: 0 };
         // var scale = { x: (this.stringBoundingBox.x1 - this.stringBoundingBox.x0), y: (this.stringBoundingBox.y1 - this.stringBoundingBox.y0), z: 1 };
         var scale = { x: this.scale, y: this.scale, z: this.scale };
         for (let i = 0; i < this.jsonMeshes.length; i++) {
-            let vertexData = {};
+            let vertexData : {"positions": number[], "indices":number[] } =  {"positions": [], "indices":[] } 
 
             let newTransedPos = this.getSpatialTransArr(this.jsonMeshes[i].verts, trans, scale);
 

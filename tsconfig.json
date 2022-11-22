@@ -1,20 +1,39 @@
-{
-  "compilerOptions": {
-    "target": "es6",
-    "module": "ESNext",
-    "moduleResolution": "node",
-    "noResolve": false,
-    "noImplicitAny": false,
-    "sourceMap": true,
-    "preserveConstEnums":true,
-    "lib": [
-        "dom",
-        "es6"
-    ],
-    "rootDir": "src",
-    "declaration": true,
-    "outDir" :"dist",
-    // "allowJs": true,                                  /* Allow JavaScript files to be a part of your program. Use the 'checkJS' option to get errors from these files. */
-    //  "checkJs": false,
+// {
+//     "compilerOptions": {
+//         "lib": [
+//             "dom",
+//             "es6"
+//         ],
+        
+//       "target": "es5",
+//       "module": "commonjs",
+//       "declaration": true,
+//       "sourceMap": true,
+//       "outDir": "./lib",
+//       "strict": true,
+//       "strictNullChecks": true
+//     },
+//     "include": ["src"],
+//     "exclude": ["node_modules", "**/__tests__/*"],
+//     "outDir" :"lib"
+//   }
+
+  {
+    "exclude": ["node_modules", "**/__tests__/*","src/assets/@custom_types/", "src/util","src/test"],
+    "include": ["src/**/*"],
+    "compilerOptions": {
+      "allowJs": true,
+      "target": "es6",
+      "moduleResolution": "node", // don't have to import actual filenames, can import extensionless files
+      "declaration": true, // generate .d.ts files
+      "sourceMap": false, // generate source map
+      "outDir": "lib", // output compiled js, d.ts, and source map to dist folder
+      "strict": true,
+      "esModuleInterop": true,
+      "resolveJsonModule": true,
+      "baseUrl": "./",
+      "paths": {
+        "*": [ "src/assets/@custom_types/*"]
+    }
+    }
   }
-}

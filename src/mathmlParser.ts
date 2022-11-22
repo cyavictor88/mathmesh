@@ -25,7 +25,7 @@ export enum LBlockType {
     msub = "msub",
     msup = "msup",
     mfrac = "mfrac",
-    msqrt = "mssqrt",
+    msqrt = "msqrt",
     mi = "mi",
     mo = "mo",
     mn = "mn",
@@ -187,6 +187,9 @@ export interface LBlock {
 
 
     edim?: ED.EDim,
+
+    col?:number,
+    row?:number
 };
 
 
@@ -197,11 +200,11 @@ export class MMParser {
     public meleArr: MEle[];
     public grandFlatArr: MMFlatStruct[];
     public grandFlatArrWithClose: MMFlatStruct[];
-    public grandLBlockTree: LBlock;
+    public grandLBlockTree: LBlock ;
     public tableStacksofStackY: MMFlatStruct[][];
     public tableStacksofStackX: MMFlatStruct[][];
-    public tableTree: LBlock;
-    public lvlStack: LBlock[];
+    public tableTree: LBlock ;
+    public lvlStack: LBlock[] =[] ;
 
     public uuidcnt: number;
 
@@ -215,7 +218,24 @@ export class MMParser {
         this.parsedStringArr = [];
         this.tableStacksofStackX = [];
         this.tableStacksofStackY = [];
-
+        this.grandLBlockTree = {
+            
+        
+            idxInArray: -9,
+        
+            scale: 7,
+            type: LBlockType.mdummy,
+            uuid: "-9",
+        }
+        this.tableTree = {
+            
+        
+            idxInArray: -9,
+        
+            scale: 7,
+            type: LBlockType.mdummy,
+            uuid: "-9",
+        }
 
 
         this.assembleMEleArrByRecuOnObject("mrow", this.mathmlXml, 0, this.parsedStringArr);
@@ -274,16 +294,16 @@ export class MMParser {
                         if (element.name === 'stretchy') {
                             if (element.val === 'true') {
                                 let blockidxInparentchildreslist = 0;
-                                for (let j = 0; j < block.parent.children.length; j++) {
-                                    if (block.uuid === block.parent.children[j].uuid)
+                                for (let j = 0; j < block!.parent!.children!.length; j++) {
+                                    if (block!.uuid === block!.parent!.children![j].uuid)
                                         blockidxInparentchildreslist = j;
                                 }
 
 
 
-                                let dizscale = block.parent.children[blockidxInparentchildreslist - 1].edim.dim.xs[1] - block.parent.children[blockidxInparentchildreslist - 1].edim.dim.xs[0]
+                                let dizscale = block!.parent!.children![blockidxInparentchildreslist - 1]!.edim!.dim.xs[1] - block!.parent!.children![blockidxInparentchildreslist - 1]!.edim!.dim.xs[0]
                                 // block.edim.dim.scale=dizscale;
-                                block.edim.spatialTransSingleEle({delx:0,dely:-dizscale},dizscale);
+                                block!.edim!.spatialTransSingleEle({delx:0,dely:-dizscale},dizscale);
                                 // block.edim.dim.xs[1]= block.parent.children[blockidxInparentchildreslist - 1].edim.dim.xs[1];
                             }
                         }
@@ -295,27 +315,27 @@ export class MMParser {
 
 
         moveAllby(dx: number, dy: number){
-            this.lvlStack[0].edim.spatialTrans({ delx: dx, dely: dy }, 1);
+            this.lvlStack[0]!.edim!.spatialTrans({ delx: dx, dely: dy }, 1);
         }
         insertFractionHelper()
         {
             let curStack = [this.grandMTagNode];
             while (curStack.length > 0) {
-                let item = curStack.shift();
-                if (item.children != null && item.children.length > 0) {
-                    for (let i = 0; i < item.children.length; i++) {
-                        curStack.push(item.children[i])
+                let item = curStack.shift()!;
+                if (item!.children != null && item!.children.length > 0) {
+                    for (let i = 0; i < item!.children.length; i++) {
+                        curStack.push(item!.children[i])
                     }
                 }
-                if (item.type == LBlockType.mfrac)//mfracmid
+                if (item!.type == LBlockType.mfrac)//mfracmid
                 {
 
-                    var newMTag: MTag = { type: LBlockType.mfracmid, lvl: item.children[0].lvl, children: [], text: '-' };
-                    item.children.splice(0, 0, newMTag);//insert "-" at beginning so the style is same with msubsup/munderover (mid / down / up)
+                    var newMTag: MTag = { type: LBlockType.mfracmid, lvl: item!.children[0].lvl, children: [], text: '-' };
+                    item!.children.splice(0, 0, newMTag);//insert "-" at beginning so the style is same with msubsup/munderover (mid / down / up)
 
 
                     // add a space after mfrac so, the mfracmid can end properly
-                    var originalItemParent = item.parent;
+                    var originalItemParent = item.parent!;
                     var newMTagRow: MTag = { type: LBlockType.mrow, lvl: item.lvl, children: [], parent: originalItemParent };
                     var newMTagEndSpace: MTag = { type: LBlockType.mi, lvl: item.lvl + 1, children: [], text: ' ', parent: newMTagRow };
                     var newMTagStartSpace: MTag = { type: LBlockType.mi, lvl: item.lvl + 1, children: [], text: ' ', parent: newMTagRow };
@@ -334,7 +354,7 @@ export class MMParser {
                     // increase lvl by one for all children of mfracitem recursively
                     let curMfracStack = [item];
                     while (curMfracStack.length > 0) {
-                        let mfracitem = curMfracStack.shift();
+                        let mfracitem = curMfracStack.shift()!;
                         mfracitem.lvl += 1;
                         if (mfracitem.children != null && mfracitem.children.length > 0) {
                             for (let i = 0; i < mfracitem.children.length; i++) {
@@ -350,9 +370,9 @@ export class MMParser {
         alignVertically(){
             // webpack console.log("vert centeringggggggggggggggggggggggggg");
             // webpack console.log(this.lvlStack[0].edim.dim.ys);
-            let y1c = (this.lvlStack[0].edim.dim.ys[1] + this.lvlStack[0].edim.dim.ys[0]) / 2;
+            let y1c = (this.lvlStack[0].edim!.dim.ys[1] + this.lvlStack[0].edim!.dim.ys[0]) / 2;
 
-            let firstlvlchildren = this.grandLBlockTree.children;
+            let firstlvlchildren = this.grandLBlockTree.children!;
 
             let mids = 0;
             let cnt = 0;
@@ -360,11 +380,11 @@ export class MMParser {
             for (let i = 0; i < firstlvlchildren.length; i++) {
                 let lvl1child = firstlvlchildren[i];
                 if (lvl1child.type != LBlockType.mfrac) {
-                    let y0l = lvl1child.edim.dim.ys[0];
-                    let y0h = lvl1child.edim.dim.ys[1];
+                    let y0l = lvl1child.edim!.dim.ys[0];
+                    let y0h = lvl1child.edim!.dim.ys[1];
                     let y0c = (y0l + y0h) / 2;
-                    lvl1child.edim.spatialTrans({ delx: 0, dely: y1c - y0c }, 1);
-                    mids += lvl1child.edim.dim.ys[1] / 2 + lvl1child.edim.dim.ys[0] / 2;
+                    lvl1child.edim!.spatialTrans({ delx: 0, dely: y1c - y0c }, 1);
+                    mids += lvl1child.edim!.dim.ys[1] / 2 + lvl1child.edim!.dim.ys[0] / 2;
                     cnt += 1;
 
 
@@ -378,34 +398,34 @@ export class MMParser {
                 let lvl1child = firstlvlchildren[i];
                 if (lvl1child.type == LBlockType.mfrac) {
                     let dy = 0;
-                    let mymid = (lvl1child.children[0].edim.dim.ys[0] + lvl1child.children[0].edim.dim.ys[1]) / 2;
+                    let mymid = (lvl1child.children![0].edim!.dim.ys[0] + lvl1child.children![0].edim!.dim.ys[1]) / 2;
 
-                    if (avgMid > lvl1child.children[0].edim.dim.ys[1])
-                        dy = avgMid - lvl1child.children[0].edim.dim.ys[1] + mymid
+                    if (avgMid > lvl1child.children![0].edim!.dim.ys[1])
+                        dy = avgMid - lvl1child.children![0].edim!.dim.ys[1] + mymid
                     else
-                        dy = avgMid - lvl1child.children[0].edim.dim.ys[0] - mymid
+                        dy = avgMid - lvl1child.children![0].edim!.dim.ys[0] - mymid
                     dy = avgMid - mymid;
-                    lvl1child.edim.spatialTrans({ delx: 0, dely: dy }, 1);
+                    lvl1child.edim!.spatialTrans({ delx: 0, dely: dy }, 1);
                 }
             }
 
             //fix bbox for root parent only
             function getBiggerbbox(bbox1: ibbox, bbox2: ibbox): ibbox {
-                let minx0 = lodash.min([bbox1.xs[0], bbox2.xs[0]]);
-                let miny0 = lodash.min([bbox1.ys[0], bbox2.ys[0]]);
-                let maxx1 = lodash.max([bbox1.xs[1], bbox2.xs[1]]);
-                let maxy1 = lodash.max([bbox1.ys[1], bbox2.ys[1]]);
+                let minx0 = lodash.min([bbox1.xs[0], bbox2.xs[0]])!;
+                let miny0 = lodash.min([bbox1.ys[0], bbox2.ys[0]])!;
+                let maxx1 = lodash.max([bbox1.xs[1], bbox2.xs[1]])!;
+                let maxy1 = lodash.max([bbox1.ys[1], bbox2.ys[1]])!;
                 return { xs: [minx0, maxx1], ys: [miny0, maxy1] }
             }
 
-            let bigbbox = { xs: this.grandLBlockTree.edim.dim.xs, ys: this.grandLBlockTree.edim.dim.ys };
+            let bigbbox = { xs: this.grandLBlockTree.edim!.dim.xs, ys: this.grandLBlockTree.edim!.dim.ys };
             for (let i = 0; i < this.grandFlatArr.length; i++) {
                 let ele = this.grandFlatArr[i];
-                let eleibbox = { xs: ele.refLblock.edim.dim.xs, ys: ele.refLblock.edim.dim.ys };
+                let eleibbox = { xs: ele.refLblock!.edim!.dim.xs, ys: ele.refLblock!.edim!.dim.ys };
                 bigbbox = getBiggerbbox(bigbbox, eleibbox);
             }
-            this.grandLBlockTree.edim.dim.xs = bigbbox.xs;
-            this.grandLBlockTree.edim.dim.ys = bigbbox.ys;
+            this.grandLBlockTree.edim!.dim.xs = bigbbox.xs;
+            this.grandLBlockTree.edim!.dim.ys = bigbbox.ys;
 
 
             //fixing bbox
@@ -452,12 +472,12 @@ export class MMParser {
             let dy = r * rh;
             return [dx, dy];
         }
-        getMinx0Miny0(table, minx0, miny0, changeminx0) {
+        getMinx0Miny0(table:MMFlatStruct, minx0:number, miny0:number, changeminx0:boolean) {
 
             let tableStack = [table];
 
             while (tableStack.length > 0) {
-                let thisTable = tableStack.pop();
+                let thisTable = tableStack.pop()!;
                 // webpack console.log("rrr");
                 let entries = lodash.filter(this.grandFlatArr, function (o) {
                     return (o.belongToTable != null &&
@@ -468,10 +488,10 @@ export class MMParser {
 
 
                 for (let i = 0; i < entries.length; i++) {
-                    let sub_ele: MMFlatStruct = entries[i];
-                    if (sub_ele.y0 < miny0) miny0 = sub_ele.y0;
+                    let sub_ele: MMFlatStruct = entries[i]!;
+                    if (sub_ele!.y0! < miny0) miny0 = sub_ele.y0!;
                     if (changeminx0) {
-                        if (sub_ele.x0 < minx0) minx0 = sub_ele.x0;
+                        if (sub_ele!.x0! < minx0) minx0 = sub_ele.x0!;
                     }
 
                 }
@@ -501,16 +521,16 @@ export class MMParser {
         moveDYfromidx(r: number, c: number, newxwid: number, newyhei: number, idx: number, entriesEle: any[]) {
             const ele = this.grandFlatArr[idx];
             if (r == 0) {
-                let dx = newxwid - (ele.x1 - ele.x0);
+                let dx = newxwid - (ele.x1! - ele.x0!);
                 if (dx < 0) dx = 0;
-                let dy = newyhei - (ele.y1 - ele.y0);
+                let dy = newyhei - (ele.y1!- ele.y0!);
                 if (dy < 0) dy = 0;
-                ele.x1 += dx;
+                ele.x1! += dx;
                 // ele.y1 += dy;
                 for (let i = idx + 1; i < this.grandFlatArr.length; i++) {
                     const sub_ele = this.grandFlatArr[i];
-                    sub_ele.x0 += dx
-                    sub_ele.x1 += dx;
+                    sub_ele.x0! += dx
+                    sub_ele.x1! += dx;
                     // sub_ele.y0 += dy;
                     // sub_ele.y1 += dy;
                 }
@@ -522,7 +542,7 @@ export class MMParser {
                 let miny0 = Number.MAX_SAFE_INTEGER;
 
                 let minx0 = Number.MAX_SAFE_INTEGER;
-                for (let j = 0; j <= ele.cols; j++) {
+                for (let j = 0; j <= ele.cols!; j++) {
 
                     let aboveEntry: [] = entriesEle[r - 1][j];
                     if (aboveEntry == null) continue;
@@ -535,16 +555,16 @@ export class MMParser {
                             [minx0, miny0] = this.getMinx0Miny0(sub_ele, minx0, miny0, changeminx0);
                         }
                         else {
-                            if (sub_ele.y0 < miny0) miny0 = sub_ele.y0;
+                            if (sub_ele.y0! < miny0) miny0 = sub_ele.y0!;
                             if (j == c) {
-                                if (sub_ele.x0 < minx0) minx0 = sub_ele.x0;
+                                if (sub_ele.x0! < minx0) minx0 = sub_ele.x0!;
                             }
                         }
 
 
                     }
                 }
-                let dy = newyhei - (ele.y1 - ele.y0);
+                let dy = newyhei - (ele.y1! - ele.y0!);
                 // if (dy < 0) dy = 0;
                 let newy0 = (miny0 - newyhei);
                 ele.y0 = newy0;
@@ -552,14 +572,14 @@ export class MMParser {
 
                 return;
                 let newx0 = minx0;
-                let dx = newx0 - ele.x0;
+                let dx = newx0 - ele.x0!;
 
                 for (let i = idx + 1; i < this.grandFlatArr.length; i++) {
                     const sub_ele = this.grandFlatArr[i];
                     // if (sub_ele.x0 == null || sub_ele.x1 == null) continue;
                     // if (sub_ele.y0 == null || sub_ele.y1 == null) continue;
-                    sub_ele.x0 += dx
-                    sub_ele.x1 += dx;
+                    sub_ele.x0! += dx
+                    sub_ele.x1! += dx;
                     // sub_ele.y0 += dy;
                     // sub_ele.y1 += dy;
                 }
@@ -676,14 +696,14 @@ export class MMParser {
                         [minx0, miny0] = this.getMinx0Miny0(sub_ele, minx0, miny0, changeminx0);
                     }
                     else {
-                        if (sub_ele.x0 < minx0) minx0 = sub_ele.x0;
+                        if (sub_ele.x0! < minx0) minx0 = sub_ele.x0!;
                     }
                 }
 
-                let dx = ele.x0 - (newxwid / 2 + minx0)
+                let dx = ele.x0! - (newxwid / 2 + minx0)
 
-                ele.x0 -= dx;
-                ele.x1 = ele.x0 + newxwid;
+                ele.x0! -= dx;
+                ele.x1 = ele.x0! + newxwid;
                 // webpack console.log(newxwid);
 
                 // let dx = ele.x0-minx0;
@@ -692,8 +712,8 @@ export class MMParser {
 
                 for (let i = idx + 1; i < this.grandFlatArr.length; i++) {
                     const sub_ele = this.grandFlatArr[i];
-                    sub_ele.x0 -= dx
-                    sub_ele.x1 -= dx;
+                    sub_ele.x0! -= dx
+                    sub_ele.x1! -= dx;
                 }
 
 
@@ -841,7 +861,7 @@ export class MMParser {
             let localLvlStack: LBlock[] = [];
             let stack = [initblock];
             while (stack.length > 0) {
-                let block = stack.shift();// pop the first ele from stack
+                let block = stack.shift()!;// pop the first ele from stack
                 localLvlStack.push(block);
                 if (block.children != null && block.children.length > 0) {
                     block.children.forEach((child, idx) => {
@@ -890,9 +910,9 @@ export class MMParser {
                 let ele = this.grandFlatArr[i];
                 if (ele.type == LBlockType.mfrac) {
                     let lvlidx = 0;
-                    let block = ele.refLblock;
+                    let block = ele.refLblock!;
                     for (let k = 0; k < this.lvlStack.length; k++) {
-                        if (this.lvlStack[k].uuid === block.uuid) {
+                        if (this.lvlStack[k].uuid === block!.uuid) {
                             lvlidx = k;
                             break;
                         }
@@ -906,20 +926,20 @@ export class MMParser {
 
 
 
-                    block.children[0].edim.dim.xs[0] = this.lvlStack[lvlidx - 1].edim.dim.xs[0];//+0.2; //block.children[0] is the mfracmid
-                    block.children[0].edim.dim.xs[1] = this.lvlStack[lvlidx + 1].edim.dim.xs[1];//-0.2; //block.children[0] is the mfracmid
+                    block!.children![0].edim!.dim.xs[0] = this.lvlStack[lvlidx - 1].edim!.dim.xs[0];//+0.2; //block.children[0] is the mfracmid
+                    block!.children![0].edim!.dim.xs[1] = this.lvlStack[lvlidx + 1].edim!.dim.xs[1];//-0.2; //block.children[0] is the mfracmid
 
-                    let numeratorWidth = block.children[1].edim.dim.xs[1] - block.children[1].edim.dim.xs[0];
-                    let denomiatorWidth = block.children[2].edim.dim.xs[1] - block.children[2].edim.dim.xs[0];
-                    let fracmidWidth = block.children[0].edim.dim.xs[1] - block.children[0].edim.dim.xs[0];
+                    let numeratorWidth = block!.children![1].edim!.dim.xs[1] - block!.children![1].edim!.dim.xs[0];
+                    let denomiatorWidth = block!.children![2].edim!.dim.xs[1] - block!.children![2].edim!.dim.xs[0];
+                    let fracmidWidth = block!.children![0].edim!.dim.xs[1] - block!.children![0].edim!.dim.xs[0];
 
-                    let numeratorCenterPoint = (numeratorWidth / 2 + block.children[1].edim.dim.xs[0]);
-                    let denomiatorCenterPoint = (denomiatorWidth / 2 + block.children[2].edim.dim.xs[0]);
-                    let fracmidCenterPoint = (fracmidWidth / 2 + block.children[0].edim.dim.xs[0]);
+                    let numeratorCenterPoint = (numeratorWidth / 2 + block!.children![1].edim!.dim.xs[0]);
+                    let denomiatorCenterPoint = (denomiatorWidth / 2 + block!.children![2].edim!.dim.xs[0]);
+                    let fracmidCenterPoint = (fracmidWidth / 2 + block!.children![0].edim!.dim.xs[0]);
 
-                    block.children[1].edim.spatialTrans({ delx: Math.round(fracmidCenterPoint - numeratorCenterPoint), dely: 0 }, 1);
-                    block.children[2].edim.spatialTrans({ delx: Math.round(fracmidCenterPoint - denomiatorCenterPoint), dely: 0 }, 1);
-                    // block.children[0].edim.dim.xs[1]+=1; 
+                    block!.children![1].edim!.spatialTrans({ delx: Math.round(fracmidCenterPoint - numeratorCenterPoint), dely: 0 }, 1);
+                    block!.children![2].edim!.spatialTrans({ delx: Math.round(fracmidCenterPoint - denomiatorCenterPoint), dely: 0 }, 1);
+                    // block!.children![0].edim!.dim.xs[1]+=1; 
                     //block.children[0] is the mfracmid
 
                     // for(let j=this.lvlStack[lvlidx+1].idxInArray;j<this.grandFlatArr.length;j++)
@@ -959,9 +979,9 @@ export class MMParser {
                     ele.attriArr.forEach(attrEle => {
                         if (attrEle.name === 'fence') {
                             let childIdx = 0; // the idx for this fence's parent's children list
-                            let block = ele.refLblock;
-                            for (let k = 0; k < block.parent.children.length; k++) {
-                                if (block.parent.children[k].uuid === block.uuid) {
+                            let block = ele.refLblock!;
+                            for (let k = 0; k < block!.parent!.children!.length; k++) {
+                                if (block!.parent!.children![k].uuid === block.uuid) {
                                     childIdx = k;
                                     break;
                                 }
@@ -969,15 +989,15 @@ export class MMParser {
                             let delx = 0;
                             let startingAdjustidxForGrandFlatArr = 0;
                             if (ele.text === "[" || ele.text === "(" || ele.text === "{" || ele.text === "|") {
-                                tableBlock = block.parent.children[childIdx + 1];  //find the corresponding table block
-                                delx = block.edim.adjustForFence(true, tableBlock); // dis adjust the table itself already
+                                tableBlock = block.parent!.children![childIdx + 1];  //find the corresponding table block
+                                delx = block.edim!.adjustForFence(true, tableBlock); // dis adjust the table itself already
                                 startingAdjustidxForGrandFlatArr = tableBlock.idxInArray + 1; //start adjusting starting from closing symbol
 
                                 //fix bbox for parents
                                 let parent_to_root = block.parent;
-                                let lvltrs = block.lvl;
+                                let lvltrs = block.lvl!;
                                 while (parent_to_root != null && lvltrs > 0) {
-                                    parent_to_root.edim.dim.xs[1] += delx;
+                                    parent_to_root.edim!.dim.xs[1] += delx;
                                     parent_to_root = parent_to_root.parent;
                                     lvltrs -= 1;
                                 }
@@ -985,14 +1005,14 @@ export class MMParser {
                             else // ],),}
                             {
                                 //dont need to set tableblock because [,{,( already set tableblock for u
-                                delx = block.edim.adjustForFence(false, tableBlock); // dis leave the table untouched
+                                delx = block.edim!.adjustForFence(false, tableBlock); // dis leave the table untouched
                                 startingAdjustidxForGrandFlatArr = block.idxInArray + 1; // start adjusting start from the the next thing after closing symbol
 
                                 //fix bbox for parents
                                 let parent_to_root = block.parent;
-                                let lvltrs = block.lvl;
+                                let lvltrs = block.lvl!;
                                 while (parent_to_root != null && lvltrs > 0) {
-                                    parent_to_root.edim.dim.xs[1] += delx;
+                                    parent_to_root.edim!.dim.xs[1] += delx;
                                     parent_to_root = parent_to_root.parent;
                                     lvltrs -= 1;
                                 }
@@ -1000,7 +1020,7 @@ export class MMParser {
                             }
                             for (let j = startingAdjustidxForGrandFlatArr; j < this.grandFlatArr.length; j++) {
                                 // // webpack console.log("moving ",this.grandFlatArr[j].text);
-                                this.grandFlatArr[j].refLblock.edim.spatialTransSingleEle({ delx: delx, dely: 0 }, 1);
+                                this.grandFlatArr[j].refLblock!.edim!.spatialTransSingleEle({ delx: delx, dely: 0 }, 1);
 
 
 
@@ -1034,7 +1054,7 @@ export class MMParser {
                 const ele = this.lvlStack[i];
 
                 if (ele.text != null) {
-                    let eledim = ele.edim.dim;
+                    let eledim = ele.edim!.dim;
                     let box = { x0: xscale * (eledim.xs[0] + xoffset), x1: xscale * (eledim.xs[1] + xoffset), y0: eledim.ys[0], y1: eledim.ys[1] };
                     let mathtxts = new MathMlStringMesh("bbox", box, eledim.scale, TypeMesh.TMbbox);
                     let vertexArr = mathtxts.toTransedMesh();
@@ -1064,7 +1084,7 @@ export class MMParser {
                 const ele = this.lvlStack[i];
 
                 if (ele.lvl == lvlnum) {
-                    let eledim = ele.edim.dim;
+                    let eledim = ele.edim!.dim;
                     let box = { x0: xscale * (eledim.xs[0] + xoffset), x1: xscale * (eledim.xs[1] + xoffset), y0: eledim.ys[0], y1: eledim.ys[1] };
                     let mathtxts = new MathMlStringMesh("bbox", box, eledim.scale, TypeMesh.TMbbox);
                     let vertexArr = mathtxts.toTransedMesh();
@@ -1095,14 +1115,15 @@ export class MMParser {
                 for (let j = 0; j < vertPositions.length; j++) {
                     finalVertices.positions.push(vertPositions[j]);
                 }
-                aggreIndex = aggreIndex + lodash.max(vertIndixes) + 1;
+                let maxvertidx = lodash.max(vertIndixes) as number;
+                aggreIndex = aggreIndex + maxvertidx + 1;
 
 
 
 
             }
             let poses = finalVertices["positions"];
-            let minx = lodash.max(poses);
+            let minx = lodash.max(poses)!;
             let miny = minx;
             let minz = minx;
             for (let i = 0; i < poses.length; i++) {
@@ -1152,7 +1173,7 @@ export class MMParser {
                 if (ele.text != null) {
 
                     if (ele.type == LBlockType.mfracmid) {
-                        let eledim = ele.edim.dim;
+                        let eledim = ele.edim!.dim;
                         const onechar = ele.text.toString();
                         let box = { x0: xscale * (eledim.xs[0] + xoffset), x1: xscale * (eledim.xs[1] + xoffset), y0: eledim.ys[0], y1: -1 };
                         // webpack console.log("putint mfracmid")
@@ -1169,7 +1190,7 @@ export class MMParser {
                     }
                     else {
 
-                        let eledim = ele.edim.dim;
+                        let eledim = ele.edim!.dim;
                         let xinterval = (eledim.xs[1] - eledim.xs[0]) / ele.text.toString().length;
                         for (let j = 0; j < ele.text.toString().length; j++) {
                             const onechar = ele.text.toString()[j];
@@ -1273,41 +1294,41 @@ export class MMParser {
             let idx = blockChildIdx;
             if (type === LBlockType.msup) {
                 if (idx == 0) return [x0, y0];
-                if (idx == 1) return [x0, y0 + 0.75 * block.children[0].scale];
+                if (idx == 1) return [x0, y0 + 0.75 * block!.children![0].scale];
                 else throw ("msup wrong");
             }
             if (type === LBlockType.msub) {
                 if (idx == 0) return [x0, y0];
-                if (idx == 1) return [x0, y0 - 0.25 * block.children[0].scale];
+                if (idx == 1) return [x0, y0 - 0.25 * block.children![0].scale];
                 else throw ("msub wrong");
             }
             if (type === LBlockType.msubsup) {
                 if (idx == 0) return [x0, y0];
-                if (idx == 1) return [x0, y0 - 0.25 * block.children[0].scale];
-                if (idx == 2) return [block.children[1].x0, y0 + 0.75 * block.children[0].scale];
+                if (idx == 1) return [x0, y0 - 0.25 * block.children![0].scale];
+                if (idx == 2) return [block.children![1].x0!, y0 + 0.75 * block.children![0].scale];
                 else throw ("msubsup wrong");
             }
             if (type === LBlockType.munderover) {
                 if (idx == 0) return [x0, y0];
-                if (idx == 1) return [block.children[0].x0, y0 - .75 * block.children[0].scale];
-                if (idx == 2) return [block.children[0].x0, y0 + .9 * block.children[0].scale];
+                if (idx == 1) return [block.children![0].x0!, y0 - .75 * block.children![0].scale];
+                if (idx == 2) return [block.children![0].x0!, y0 + .9 * block.children![0].scale];
                 else throw ("msubsup wrong");
             }
             if (type === LBlockType.mover) {
                 if (idx == 0) return [x0, y0];
-                if (idx == 1) return [block.children[0].x0 + 0.25 * block.scale, y0 + .5 * block.children[0].scale];
+                if (idx == 1) return [block.children![0].x0! + 0.25 * block.scale, y0 + .5 * block.children![0].scale];
                 else throw ("msubsup wrong");
             }
             if (type === LBlockType.munder) {
                 if (idx == 0) return [x0, y0];
-                if (idx == 1) return [block.children[0].x0, y0 - .75 * block.children[0].scale];
+                if (idx == 1) return [block.children![0].x0!, y0 - .75 * block.children![0].scale];
                 else throw ("msubsup wrong");
             }
 
 
             if (type === LBlockType.mfrac) {
                 if (idx == 0) return [x0, y0 + 0.5 * block.scale];
-                if (idx == 1) return [block.children[0].x0, y0 - 0.5 * block.scale];
+                if (idx == 1) return [block.children![0].x0!, y0 - 0.5 * block.scale];
             }
             return [x0, y0];
         }
@@ -1387,7 +1408,7 @@ export class MMParser {
                     res = this.getBlockWithUUID(block.children[i], uuid);
                 }
             }
-            return res;
+            return res!;
         }
 
 
@@ -1410,10 +1431,10 @@ export class MMParser {
             function putinOrPulloutFromOwnedDetailsinfo(matchedType: LBlockType, ele: MMFlatStruct, ownedDetailsinfo: OwnedDetail[]) {
                 if (ele.type == matchedType && ele.closeFor == null) {
                     if (matchedType == LBlockType.mtable) {
-                        let edimcoords = []
-                        for (let r = 0; r < ele.rows; r++) {
+                        let edimcoords :any[]= []
+                        for (let r = 0; r < ele.rows!; r++) {
                             edimcoords.push([]);
-                            for (let c = 0; c < ele.cols; c++) {
+                            for (let c = 0; c < ele.cols!; c++) {
                                 edimcoords[edimcoords.length - 1].push(new ED.EDim());
                             }
                         }
@@ -1425,7 +1446,7 @@ export class MMParser {
                     }
                 }
                 else if (ele.type == matchedType && ele.closeFor != null) {
-                    lodash.remove(ownedDetailsinfo, function (tmp) { return tmp.owner.uuid === ele.closeFor.uuid });
+                    lodash.remove(ownedDetailsinfo, function (tmp) { return tmp.owner.uuid === ele.closeFor!.uuid });
                 }
                 return ownedDetailsinfo
             }
@@ -1454,7 +1475,7 @@ export class MMParser {
                 for (let j = ownedDetailsinfo.length - 1; j >= 0; j--) {
                     let tmpDetail = ownedDetailsinfo[j];
                     if (ele.lvl - 1 == tmpDetail.owner.lvl) {
-                        tmpDetail.counter = tmpDetail.counter + 1;
+                        tmpDetail.counter = tmpDetail.counter! + 1;
                         if (tmpDetail.owner.type == LBlockType.mfrac) {
                             switch (tmpDetail.counter) {
                                 case 0:
@@ -1510,7 +1531,7 @@ export class MMParser {
                 for (let j = ownedDetailsinfo.length - 1; j >= 0; j--) {
                     let ownedDetailinfo = ownedDetailsinfo[j];
                     if (ownedDetailinfo.owner.type == LBlockType.mtable) {
-                        let mostRecentTabInfo = ownedDetailinfo.tabDetail;
+                        let mostRecentTabInfo = ownedDetailinfo.tabDetail!;
                         if (ele.type == LBlockType.mtr && ele.closeFor == null) {
                             mostRecentTabInfo.rowIdx += 1;
                         }
@@ -1518,14 +1539,14 @@ export class MMParser {
                             mostRecentTabInfo.colIdx += 1;
                         }
                         if (ele.closeFor != null) continue;
-                        mostRecentTabInfo.colIdx = this.getColIdx(mostRecentTabInfo.colIdx, ownedDetailinfo.owner.cols);
+                        mostRecentTabInfo.colIdx = this.getColIdx(mostRecentTabInfo.colIdx, ownedDetailinfo.owner!.cols!);
                         break;
                     }
                 }
                 for (let j = 0; j <= ownedDetailsinfo.length - 1; j++) {
                     let ownedDetailinfo = ownedDetailsinfo[j];
                     if (ownedDetailinfo.owner.type == LBlockType.mtable) {
-                        let tmptab = ownedDetailinfo.tabDetail;
+                        let tmptab = ownedDetailinfo.tabDetail!;
                         ele.ownedDetails.push({ owner: ownedDetailinfo.owner, tabDetail: { colIdx: tmptab.colIdx, rowIdx: tmptab.rowIdx, tab: tmptab.tab } });
                     }
                     else {
@@ -1792,7 +1813,7 @@ export class MMParser {
 
         };
         turnGrandFlatArrToGrandLBlockTree() {
-            this.grandLBlockTree = { children: [], lvl: 0, scale: 1, type: LBlockType.mrow, uuid: this.grandFlatArr[0].uuid, idxInArray: 0, belongArr: [] };
+            this.grandLBlockTree = { children: [], lvl: 0, scale: 1, type: LBlockType.mrow, uuid: this.grandFlatArr[0].uuid!, idxInArray: 0, belongArr: [] };
             this.grandFlatArr[0].refLblock = this.grandLBlockTree;
 
             this.grandLBlockTree.parent = this.grandLBlockTree;
@@ -1803,28 +1824,29 @@ export class MMParser {
 
                 if (ele.closeFor == null) {
                     let parentOfnewLBlock = parentOfnewLBlockArr[ele.lvl - 1];
-                    let newLBlock: LBlock = { lvl: ele.lvl, parent: parentOfnewLBlock, scale: parentOfnewLBlock.scale, type: LBlockType[ele.type], uuid: ele.uuid, idxInArray: i, belongArr: [] };
+                    let eletype = ele.type
+                    let newLBlock: LBlock = { lvl: ele.lvl, parent: parentOfnewLBlock, scale: parentOfnewLBlock.scale, type: eletype, uuid: ele.uuid!, idxInArray: i, belongArr: [] };
                     this.grandFlatArr[i].refLblock = newLBlock;
                     switch (ele.type) {
                         case LBlockType.mo:
                             newLBlock["text"] = ele.text;
-                            parentOfnewLBlock.children.push(newLBlock);
+                            parentOfnewLBlock.children!.push(newLBlock);
                             break;
                         case LBlockType.mi:
                             newLBlock["text"] = ele.text;
-                            parentOfnewLBlock.children.push(newLBlock);
+                            parentOfnewLBlock.children!.push(newLBlock);
                             break;
                         case LBlockType.mn:
                             newLBlock["text"] = ele.text;
-                            parentOfnewLBlock.children.push(newLBlock);
+                            parentOfnewLBlock.children!.push(newLBlock);
                             break;
                         case LBlockType.mtext:
                             newLBlock["text"] = ele.text;
-                            parentOfnewLBlock.children.push(newLBlock);
+                            parentOfnewLBlock.children!.push(newLBlock);
                             break;
                         case LBlockType.mfracmid:
                             newLBlock["text"] = ele.text;
-                            parentOfnewLBlock.children.push(newLBlock);
+                            parentOfnewLBlock.children!.push(newLBlock);
                             break;
                         case LBlockType.mtable:
                             newLBlock["col"] = ele.cols;
@@ -1833,7 +1855,7 @@ export class MMParser {
                             newLBlock["children"] = [];
                             if (ele.lvl == parentOfnewLBlockArr.length) parentOfnewLBlockArr.push(newLBlock);
                             else parentOfnewLBlockArr[ele.lvl] = newLBlock;
-                            parentOfnewLBlock.children.push(newLBlock);
+                            parentOfnewLBlock.children!.push(newLBlock);
                             break;
                     }
                 }
@@ -1856,7 +1878,7 @@ export class MMParser {
                     curTable.rows = 0;
                 }
                 if (ele.type == LBlockType.mtd && ele.closeFor == null) {
-                    curTable.cols += 1;
+                    curTable.cols! += 1;
                     // const index = lodash.findIndex(this.grandFlatArr, (sub_ele) => sub_ele.uuid === ele.uuid);
                     // let spaceBetweenCol: MMFlatStruct = { type: LBlockType.mi, lvl: ele.lvl + 1, text: " ", uuid: uuidv4().toString() };
                     // this.grandFlatArr.splice(index + 1, 0, spaceBetweenCol);
@@ -1869,13 +1891,13 @@ export class MMParser {
 
                 }
                 if (ele.type == LBlockType.mtr && ele.closeFor == null) {
-                    curTable.rows += 1;
+                    curTable.rows! += 1;
                 }
                 if (ele.type == LBlockType.mtable && ele.closeFor != null) {
-                    curTable.cols = (curTable.cols / curTable.rows | 0);
+                    curTable.cols = (curTable.cols! / curTable.rows! | 0);
                     // webpack console.log("col:" + curTable.cols + " row:" + curTable.rows);
 
-                    const index = lodash.findIndex(this.grandFlatArr, (sub_ele) => sub_ele.uuid === ele.closeFor.uuid);
+                    const index = lodash.findIndex(this.grandFlatArr, (sub_ele) => sub_ele.uuid === ele.closeFor!.uuid);
                     this.grandFlatArr[index].cols = curTable.cols;
                     this.grandFlatArr[index].rows = curTable.rows;
 
@@ -1886,7 +1908,7 @@ export class MMParser {
             }
 
         }
-        findLastOpenEleAtlvl(j: number): MMFlatStruct {
+        findLastOpenEleAtlvl(j: number) {
 
             for (let i = this.grandFlatArrWithClose.length - 1; i >= 0; i -= 1) {
                 const ele = this.grandFlatArrWithClose[i];
@@ -1907,7 +1929,7 @@ export class MMParser {
                 if (curEle.lvl <= prevLvl) {
                     let j = prevLvl;
                     while (j >= curEle.lvl) {
-                        const lastOpenEleAtLvlj = this.findLastOpenEleAtlvl(j);
+                        const lastOpenEleAtLvlj = this.findLastOpenEleAtlvl(j)!;
                         let eleThatClose: MMFlatStruct = { type: lastOpenEleAtLvlj.type, lvl: lastOpenEleAtLvlj.lvl, closeFor: lastOpenEleAtLvlj, belongArr: [] };
                         this.grandFlatArrWithClose.push(eleThatClose);
                         j -= 1;
@@ -1959,7 +1981,7 @@ export class MMParser {
         }
 
 
-        traverseToCurLvlFromFirstNode(targetLvl) {
+        traverseToCurLvlFromFirstNode(targetLvl:number) {
             var curlvl = -1;
             let curNode: MTag = this.grandMTagNode;
             let intoNewLvl = false;
@@ -1985,7 +2007,9 @@ export class MMParser {
                 let nextMoveintoNewLvl = atLvlNode.intoNewLvl;
                 switch (ele.type) {
                     case MEleType.Start:
-                        var newMTag: MTag = { type: LBlockType[ele.node], lvl: ele.lvl, children: [] };
+
+                        const strEnum = ele.node as unknown as LBlockType;
+                        var newMTag: MTag = { type: LBlockType[strEnum], lvl: ele.lvl, children: [] };
                         if (nextMoveintoNewLvl) {
                             // first child in this new level
                             newMTag.parent = traversedNode;
@@ -1993,7 +2017,7 @@ export class MMParser {
                         }
                         else {
                             newMTag.parent = traversedNode.parent;
-                            traversedNode.parent.children.push(newMTag);
+                            traversedNode.parent!.children.push(newMTag);
                         }
                         break;
                     case MEleType.Attris:
@@ -2027,7 +2051,7 @@ export class MMParser {
 
         // }
 
-        assembleMEleArrByRecuOnObject(prenodeKey, curObj, level, cuStringArr) {
+        assembleMEleArrByRecuOnObject(prenodeKey:any, curObj:any, level:any, cuStringArr:any) {
 
 
 
