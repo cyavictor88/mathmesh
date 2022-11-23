@@ -117,14 +117,14 @@ export  function drawMathmesh(input:string, verts:any ) {
     const context = canvas.getContext("2d");
 
     // if you want raw text with it
-    const fontSetting = "25px Impact";
-    context.font = fontSetting;
-    const textWidth = context.measureText(input).width;
-    if (textWidth + widthPadding > canvas.width)
-        canvas.width = textWidth + widthPadding;
-    context.font = fontSetting;
-    context.fillText(input, widthPadding, 50, textWidth + widthPadding);
-    context.fillStyle = "black";
+    // const fontSetting = "25px Impact";
+    // context.font = fontSetting;
+    // const textWidth = context.measureText(input).width;
+    // if (textWidth + widthPadding > canvas.width)
+    //     canvas.width = textWidth + widthPadding;
+    // context.font = fontSetting;
+    // context.fillText(input, widthPadding, 50, textWidth + widthPadding);
+    // context.fillStyle = "black";
 
 
     context.beginPath();
