@@ -68,7 +68,7 @@ ___
 
 
 
-It works in vite react, but for npm run build to work in a vite project, need to add "NODE_OPTIONS=--max-old-space-size=4000 vite build" 
+It works in vite react, but for npm run build to work, you might need to add "NODE_OPTIONS=--max-old-space-size=4000 vite build" 
 
 ___
 
