@@ -2,7 +2,7 @@ NOTE:
 this package is farrrrr from being complete, but i think if it can help me, it might can help someone, too
 
 Shortcomings:
-1. It doesn't support sqrt / nth root (please use ^(1/n) instead)  
+1. It doesn't support sqrt / nth root, please use ^(1/n) instead  
 2. \vec is placed badly, use \overrightarrow is a lil bit better
 
 To use:
@@ -12,7 +12,7 @@ To use:
 
 <h3>What this package does:</h3>
 
-given a latex math string, it returns its positions and indices (for babylon)  and vertices (for threejs bufferGeometry) 
+Given a latex math string, returns its positions and indices (for babylonjs)  and vertices (for threejs bufferGeometry) 
 
 ex:
 
