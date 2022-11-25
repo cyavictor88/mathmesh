@@ -1,6 +1,6 @@
 {
   "name": "mathmesh",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Given a latex math string, returns its positions and indices (for babylonjs)  and vertices (for threejs bufferGeometry)",
   "types": "dist/mathmesh.d.ts",
   "files": [
@@ -11,10 +11,15 @@
     "test": "npx ts-node-dev src/test/server.ts",
     "build": "rm -rf lib/ ; rm -rf dist/* ;tsc && rollup -c"
   },
+  "author": "cyavictor88 <cyavictor88@gmail.com>",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cyavictor88/mathmesh.git"
+  },
   "type":"module",
   "keywords": ["latex math","mesh","threejs","babylonjs"],
-  "author": "",
-  "license": "ISC",
+
   "dependencies": {
     "@types/katex": "^0.14.0",
     "@types/lodash": "^4.14.189",
