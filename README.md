@@ -3,7 +3,6 @@ this package is farrrrr from being complete, but i think if it can help me, it m
 
 Shortcomings:
 1. It doesn't support sqrt / nth root, please use ^(1/n) instead  
-2. \vec is placed badly, use \overrightarrow is a lil bit better
 
 To use:
 

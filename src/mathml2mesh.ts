@@ -124,13 +124,21 @@ export class MathMlStringMesh {
         // let spaces_or_null_code = ["00a0","0020","2061"];
 
         // for (let i = 0; i < mString.length; i++) {
+
+        
+            // when see \\vec change the string to ⇀ 
             let dizcode=mString[0].charCodeAt(0).toString(16).padStart(4, "0");
-                
+            if (dizcode==="20d7") { 
+                mString='⇀';
+                dizcode = mString[0].charCodeAt(0).toString(16).padStart(4, "0"); 
+            }
+        
+            // →  //⇀
+
+
             if (dizcode==="00a0"){this.hasMesh=false; return;} //NO-BREAK SPACE
             if (dizcode==="0020"){this.hasMesh=false; return;} //normal space
             if (dizcode==="2061"){this.hasMesh=false; return;} //null 
-           
-
             let key = "U+" + dizcode;
             let newmesh: TMeshJson = {
                 char: mString[0],

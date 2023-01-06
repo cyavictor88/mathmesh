@@ -22,11 +22,11 @@ export interface Dim {
 
 export class EDim {
 
-    public dim: Dim ={
+    public dim: Dim = {
         scale: 1,
         xs: [0, 0],
         ys: [0, 0]
-    } ;
+    };
     public grandFlatArr: MMFlatStruct[] | [] = [];
     public block: MP.LBlock | null = null;
     constructor();
@@ -45,7 +45,7 @@ export class EDim {
                 this.adjustTable();
             }
         }
-        
+
 
     }
     adjustForFence(openorclose: boolean, tableBlock: MP.LBlock): number {
@@ -202,7 +202,7 @@ export class EDim {
 
     setDim(): Dim {
         let block = this.block;
-        if(!block)return { scale: 1, xs: [0,0], ys: [0,0] };
+        if (!block) return { scale: 1, xs: [0, 0], ys: [0, 0] };
         let eleinArray = this.grandFlatArr[block.idxInArray];
         // //webpack console.log(block.lvl, block.type,block.text);
 
@@ -263,19 +263,16 @@ export class EDim {
             let baseEle_y1 = 0;
             let baseEle_x1 = 0;
             let baseEle_x0 = 0;
-
             block.children!.forEach((child, idx) => {
                 let dim = child.edim!.dim;
                 let eleinArray = this.grandFlatArr[child.idxInArray];
                 let ownedDetailed = lodash.find(eleinArray.ownedDetails, function (o) { return o.owner.uuid === block!.uuid; });
-                ////webpack console.log(ownedDetailed);
                 // if (idx == 0) {
                 if (ownedDetailed!.pos == MP.Position.Mid) {
                     baseEle_x1 = dim.xs[1];
                     baseEle_y0 = dim.ys[0];
                     baseEle_y1 = dim.ys[1];
                     baseEle_x0 = dim.xs[0];
-
                 }
                 // else if (idx == 1) {
                 else if (ownedDetailed!.pos == MP.Position.Down) {
@@ -289,6 +286,11 @@ export class EDim {
                     let newscale = .65;
                     let delx = baseEle_x0 - dim.xs[0];
                     let dely = (baseEle_y1 - baseEle_y0);
+                    let dizcode = eleinArray!.text![0].charCodeAt(0).toString(16).padStart(4, "0");
+                    if (dizcode === "20d7") { //vec arrow placement: place at lower position
+                        newscale=1;
+                        dely = dely*.55;
+                    }
                     child.edim!.spatialTrans({ delx: delx, dely: dely }, newscale);
                 }
             });
@@ -327,7 +329,7 @@ export class EDim {
                 x0 = child.edim!.dim.xs[1];
             });
             let bchilren = block!.children
-                let x1 = bchilren![bchilren!.length-1].edim!.dim.xs[1];
+            let x1 = bchilren![bchilren!.length - 1].edim!.dim.xs[1];
 
             return { scale: 1, xs: [block!.children![0].edim!.dim.xs[0], x1], ys: [y0, y1] };
 
@@ -436,7 +438,7 @@ export class EDim {
 
 
         }
-        return { scale: 1, xs: [0,0], ys: [0,0] };
+        return { scale: 1, xs: [0, 0], ys: [0, 0] };
 
     }
 

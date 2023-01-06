@@ -8,7 +8,7 @@ import { drawMathmesh ,drawMathMeshWithBoundingBox, generateCanvasImgObj} from '
 // const genpic= require('./genpic.js');
 // const app = express();
 // const port = 8081;
-var rawstr = "\\overrightarrow{a_q}=\\frac{12345}{3}=\\frac{\\begin{bmatrix} \\overrightarrow{a} & b_{xyz} & \\frac{abcm^e}{n} \\\\  d^{qp} & e & foo \\end{bmatrix}}{\\begin{bmatrix} a & c \\end{bmatrix}}=\\text{a b}=\\begin{pmatrix} annnn^y & b_{44}  \\\\ 5^5_3 & zzzz  \\end{pmatrix}=\\int_{a}^{b} f(x) \\, dx = \\begin{cases} \\textrm{true,} & \\textrm{if } 0 < x_u < 35^{kmm} \\\\ \\textrm{false,} & \\textrm{otherwise} x^y \\end{cases} = \\oint_V f(s) = \\int_{a}^{b} f(x) \\, dx  =\\sum_{n=1}^{\\infty}n=\\lim_{x \\to \\infty} sin(x)";
+var rawstr = "\\vec{a_q}=\\frac{12345}{3}=\\frac{\\begin{bmatrix} \\vec{a} & b_{xyz} & \\frac{abcm^e}{n} \\\\  d^{qp} & e & foo \\end{bmatrix}}{\\begin{bmatrix} a & c \\end{bmatrix}}=\\text{a b}=\\begin{pmatrix} annnn^y & b_{44}  \\\\ 5^5_3 & zzzz  \\end{pmatrix}=\\int_{a}^{b} f(x) \\, dx = \\begin{cases} \\textrm{true,} & \\textrm{if } 0 < x_u < 35^{kmm} \\\\ \\textrm{false,} & \\textrm{otherwise} x^y \\end{cases} = \\oint_V f(s) = \\int_{a}^{b} f(x) \\, dx  =\\sum_{n=1}^{\\infty}n=\\lim_{x \\to \\infty} sin(x)";
 const verts:any =  mathmesh(rawstr)
 const bbox:any =  mathmeshBoxAtLevel(rawstr,1);
 const app = express();
