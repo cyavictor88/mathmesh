@@ -1,7 +1,7 @@
 NOTE: 
-this package is farrrrr from being complete, but i think if it can help me, it might can help someone, too
+this package is messy like spaghetti, but i think if it can help me, it might can help someone, too
 
-Shortcomings:
+What it lacks:
 1. It doesn't support sqrt / nth root, please use ^(1/n) instead  
 
 To use:
@@ -10,8 +10,9 @@ To use:
 
 
 <h3>What this package does:</h3>
+Given a latex math string, returns its positions and indices (for babylonjs) and vertices (for threejs bufferGeometry), also gives 2D mesh for framework like pixi js
 
-Given a latex math string, returns its positions and indices (for babylonjs)  and vertices (for threejs bufferGeometry) 
+<b>For 3D:</b>
 
 ex:
 
@@ -32,6 +33,7 @@ ___
 <h4>to use in babylon:</h4>
 
     import {mathmesh} from "mathmesh";
+    ...
     var verts = mathmesh("\\int_{a}^{b}x^2 \\,dx");
     let customMesh = new Mesh("mymathmesh", scene);
     let vertexData = new VertexData();
@@ -69,8 +71,67 @@ ___
 
 It works in vite react, but for npm run build to work, you might need to add "NODE_OPTIONS=--max-old-space-size=4000 vite build" 
 
+Also tried in nextjs, runs fine
 ___
 
+<b>For 2D:</b>
+
+ex:
+
+      import {mathmesh2D} from "mathmesh";
+      var mesh = mathmesh2D("\\int_{a}^{b}x^2 \\,dx");
+      console.log(mesh)'
+
+you will get:
+
+    {
+      positions: [ x1, y1, x2, y2, .....],
+      indicies: [ # # # # # .....],
+      vertices: Float32Array(),
+      triangles: [ 
+        [ [t1_x0,t1_y0], [t1_x1, t1_y1] ,[t1_x2, t1_y2] ], 
+        [ [t2_x0,t2_y0], [t2_x1, t2_y1] ,[t2_x2, t2_y2] ],
+        ... ]
+      aTextureCoord: number[];
+      aVertexPosition: number[];  
+    }
+
+___
+
+<h4>to use in 2D framework such as pixi js:</h4>
+
+<h3>using aVertexPosition and aTextureCoord:</h3>
+
+    import {mathmesh2D} from "mathmesh";
+    ...
+    const mesh2D = mathmesh2D("\\sum_{n=1}^{\\infty} 2^{-n} = 1")
+    const geometry = new PIXI.Geometry()
+    .addAttribute('aVertexPosition', mesh2D.aVertexPosition,2)
+    .addAttribute('aTextureCoord', mesh2D.aTextureCoord,2)
+    .addIndex(mesh2D.indices);  
+    const greenColor = new PIXI.MeshMaterial(PIXI.Texture.WHITE, {
+        tint: 0x00ff00, // Green color
+    });
+    const pixiMesh = new PIXI.Mesh(geometry, greenColor);
+    app.stage.addChild(pixiMesh);
+
+<h3>using triangles:</h3>
+
+    import {mathmesh2D} from "mathmesh";
+    ...
+    const mesh2D = mathmesh2D("\\sum_{n=1}^{\\infty} 2^{-n} = 1")
+    const mathmeshGraphics = new PIXI.Graphics();
+    mathmeshGraphics.beginFill(0x000000);
+    mesh2D.triangles.forEach( (tri: number[][]) => {
+        mathmeshGraphics.moveTo(tri[0][0], tri[0][1] );
+        mathmeshGraphics.lineTo(tri[1][0], tri[1][1] );
+        mathmeshGraphics.lineTo(tri[2][0], tri[2][1] );
+        mathmeshGraphics.lineTo(tri[0][0], tri[0][1] );
+    });
+    mathmeshGraphics.endFill();
+    app.stage.addChild(mathmeshGraphics);
+
+___
 
 <h3>Local testing using Node Canvas</h3>
 
@@ -89,7 +150,7 @@ if you want build from source and to see how it draw out locally , you can simpl
 ___
 
 <h3>Remarks:</h3>
-If you dig into the repo just a little bit, you can quickly notice I suck at git/npm workflow and coding. For example, I commit and push wayyy too frequent. And for npm versioning, I also publish wayyy too frequent. The code itself is also a mess. I think only I can read it coherently. I will try to improve and fix it. "IF" one day everything is up to standard and is production ready. I will probably just create a new repo and new npm package name, leaving this mess behind. i dunno... thats prob also not good software engineering. 
+The code is a mess. I think only I can read it coherently(not anymore). I will try to improve and fix it.
 ___
 
 

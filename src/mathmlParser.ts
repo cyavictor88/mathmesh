@@ -219,71 +219,31 @@ export class MMParser {
         this.tableStacksofStackX = [];
         this.tableStacksofStackY = [];
         this.grandLBlockTree = {
-            
-        
             idxInArray: -9,
-        
             scale: 7,
             type: LBlockType.mdummy,
             uuid: "-9",
         }
         this.tableTree = {
-            
-        
             idxInArray: -9,
-        
             scale: 7,
             type: LBlockType.mdummy,
             uuid: "-9",
         }
-
-
         this.assembleMEleArrByRecuOnObject("mrow", this.mathmlXml, 0, this.parsedStringArr);
-
-
-
         this.assembleGrandMTagNode();
-
-
-
-
-
         this.insertFractionHelper();
-
-
-
         this.assembleGrandFlatArr(this.grandMTagNode);
-
-
         this.assembleGrandFlatWithCloseArr();
-
-
         this.addRowColAttriForTablesInFlatArrs();
-
-
-
         this.turnGrandFlatArrToGrandLBlockTree();
-
-
         this.fillinBelongArr();
-
-
-
         this.assembleLvlStack(this.grandLBlockTree);
-
-
         this.fenceAdjustment();
         this.mfracAdjustment();
-
         this.stretchyAdjustment();
-
-
-
         this.alignVertically();
         // this.moveAllby(-50,5);
-
-
-
     }
     stretchyAdjustment() {
         for (let i = 0; i < this.grandFlatArr.length; i++) {
@@ -1161,7 +1121,7 @@ export class MMParser {
 
         }
 
-        generateMathmesh(): { positions: number[], indices: number[], vertices: Float32Array } {
+        generateMathmesh3D(): { positions: number[], indices: number[], vertices: Float32Array } {
             let xoffset = 0;//-33;
             let xscale = 0.6; // i manaully try and get width=0.6 to be the size of a char that has heigh = 1
             let finalVertexArr = [];

@@ -1,7 +1,7 @@
 {
   "name": "mathmesh",
-  "version": "0.0.3",
-  "description": "Given a latex math string, returns its positions and indices (for babylonjs)  and vertices (for threejs bufferGeometry)",
+  "version": "0.0.6",
+  "description": "Given a latex math string, returns its positions and indices (for babylonjs)  and vertices (for threejs bufferGeometry), also gives 2D mesh for framework such as pixi",
   "types": "dist/mathmesh.d.ts",
   "files": [
     "dist/**/*"
@@ -11,17 +11,21 @@
     "test": "npx ts-node-dev src/test/server.ts",
     "build": "rm -rf lib/ ; rm -rf dist/* ;tsc && rollup -c"
   },
+  "type":"module",
   "author": "cyavictor88 <cyavictor88@gmail.com>",
   "license": "ISC",
   "repository": {
     "type": "git",
     "url": "https://github.com/cyavictor88/mathmesh.git"
   },
-  "type":"module",
-  "keywords": ["latex math","mesh","threejs","babylonjs"],
-
+  "keywords": [
+    "latex math",
+    "mesh",
+    "threejs",
+    "babylonjs",
+    "pixijs"
+  ],
   "dependencies": {
-    "@types/katex": "^0.14.0",
     "@types/lodash": "^4.14.189",
     "fast-xml-parser": "^4.0.11",
     "katex": "^0.16.3",
@@ -33,6 +37,7 @@
     "@rollup/plugin-json": "^5.0.1",
     "@rollup/plugin-terser": "^0.1.0",
     "@types/express": "^4.17.14",
+    "@types/katex": "^0.16.1",
     "@types/node": "^18.11.9",
     "canvas": "^2.10.2",
     "express": "^4.18.2",
