@@ -1,6 +1,5 @@
 // import * as mathjs from 'mathjs';
 import {Matrix , multiply, identity,index ,matrix} from 'mathjs';
-import {cloneDeep} from 'lodash';
 
 // var cjson = require('../ubuntu-r.json');
 // var cjson = require('./assets/julia-r.json');
@@ -44,14 +43,6 @@ interface cjsoninfo {
     mode: string;
 }
 
-let dash: TMeshJson = {
-    char: dashkey,
-    uni: dashkey,
-    verts: cloneDeep(cjson[dashkey as keyof typeof cjson].verts),
-    // tris: cjson[dashkey].tris,
-    tris: cjson[dashkey as keyof typeof cjson].tris,
-    bbox: [0, 0, 0, 0]
-};
 
 
 
@@ -143,8 +134,8 @@ export class MathMlStringMesh {
             let newmesh: TMeshJson = {
                 char: mString[0],
                 uni: key,
-                verts: cloneDeep(cjson[key as keyof typeof cjson].verts),
-                tris: cjson[key as keyof typeof cjson].tris,
+                verts: (((cjson[key as keyof typeof cjson] as any).verts) as number[]).map(x=>x),
+                tris: (cjson[key as keyof typeof cjson] as any).tris,
                 bbox: [0, 0, 0, 0]
             };
             this.jsonMeshes.push(newmesh);

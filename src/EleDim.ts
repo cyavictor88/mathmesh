@@ -4,7 +4,6 @@ import { LBlockType, MathmlParser as MP, MMFlatStruct, TabInfo } from './mathmlP
 
 
 import * as mathjs from 'mathjs';
-import * as lodash from 'lodash';
 
 // const config = {
 //    
@@ -81,7 +80,8 @@ export class EDim {
         // }
     }
     adjustTable() {
-        let ownedDetail = lodash.findLast(this.grandFlatArr[this.block!.idxInArray].ownedDetails, function (o) { return o.tabDetail != null; })
+        let ownedDetails = this.grandFlatArr[this.block!.idxInArray].ownedDetails?.filter( function (o) { return o.tabDetail != null; })
+        let ownedDetail = ownedDetails ? ownedDetails[ownedDetails.length-1] : null;
         if (!!ownedDetail && !!(ownedDetail.tabDetail)) {
 
 
@@ -227,7 +227,7 @@ export class EDim {
             block.children!.forEach((child, idx) => {
                 let dim = child.edim!.dim;
                 let eleinArray = this.grandFlatArr[child.idxInArray];
-                let ownedDetailed = lodash.find(eleinArray.ownedDetails, function (o) { return o.owner.uuid === block!.uuid; });
+                let ownedDetailed = eleinArray.ownedDetails!.find((o)=> { return o.owner.uuid === block!.uuid; });
                 ////webpack console.log(ownedDetailed);
                 // if (idx == 0) {
                 if (ownedDetailed!.pos == MP.Position.Mid) {
@@ -266,7 +266,7 @@ export class EDim {
             block.children!.forEach((child, idx) => {
                 let dim = child.edim!.dim;
                 let eleinArray = this.grandFlatArr[child.idxInArray];
-                let ownedDetailed = lodash.find(eleinArray.ownedDetails, function (o) { return o.owner.uuid === block!.uuid; });
+                let ownedDetailed = eleinArray.ownedDetails!.find( (o)=> { return o.owner.uuid === block!.uuid; });
                 // if (idx == 0) {
                 if (ownedDetailed!.pos == MP.Position.Mid) {
                     baseEle_x1 = dim.xs[1];
@@ -343,7 +343,7 @@ export class EDim {
             block.children!.forEach((child, idx) => {
                 let dim = child.edim!.dim;
                 let eleinArray = this.grandFlatArr[child.idxInArray];
-                let ownedDetailed = lodash.find(eleinArray.ownedDetails, function (o) { return o.owner.uuid === block!.uuid; })!;
+                let ownedDetailed = eleinArray.ownedDetails!.find(  (o)=> { return o.owner.uuid === block!.uuid; })!;
                 ////webpack console.log(ownedDetailed);
                 // if (idx == 0) {
                 if (ownedDetailed.pos == MP.Position.Mid) {
@@ -382,7 +382,8 @@ export class EDim {
         // mtd
         if (block.type == MP.LBlockType.mtd) {
 
-            let ownedDetail = lodash.findLast(this.grandFlatArr[block.idxInArray].ownedDetails, function (o) { return o.tabDetail != null; })!
+            let ownedDetails = this.grandFlatArr[block.idxInArray].ownedDetails!.filter(function (o) { return o.tabDetail != null; })!
+            let ownedDetail = ownedDetails[ownedDetails.length-1];
             let rows = ownedDetail.tabDetail!.tab.rows!;
             let cols = ownedDetail.tabDetail!.tab.cols!;
             let rowidx = ownedDetail.tabDetail!.rowIdx!;
@@ -451,10 +452,11 @@ export class EDim {
     getTabInfoUsingRowIdxColIdx(tab: MMFlatStruct, rowIdx: number, colIdx: number): TabInfo {
         this.grandFlatArr.forEach(ele => {
             if (ele.ownedDetails != null && ele.ownedDetails.length > 0) {
-                let owndet = lodash.findLast(ele.ownedDetails, function (p) {
+                let owndets = ele.ownedDetails.filter((p)=> {
                     return p.tabDetail != null && p.tabDetail.tab.uuid == tab.uuid &&
                         p.tabDetail.rowIdx == rowIdx && p.tabDetail.colIdx == colIdx
-                })
+                });
+                let owndet = owndets.length === 0 ? undefined : owndets[owndets.length-1];
                 if (owndet != undefined) {
                     return owndet.tabDetail;
                 }

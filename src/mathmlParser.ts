@@ -1,4 +1,3 @@
-import * as lodash from 'lodash';
 import { MathMlStringMesh, TypeMesh } from './mathml2mesh';
 import { EleDim as ED } from './EleDim';
 
@@ -371,10 +370,10 @@ export class MMParser {
 
             //fix bbox for root parent only
             function getBiggerbbox(bbox1: ibbox, bbox2: ibbox): ibbox {
-                let minx0 = lodash.min([bbox1.xs[0], bbox2.xs[0]])!;
-                let miny0 = lodash.min([bbox1.ys[0], bbox2.ys[0]])!;
-                let maxx1 = lodash.max([bbox1.xs[1], bbox2.xs[1]])!;
-                let maxy1 = lodash.max([bbox1.ys[1], bbox2.ys[1]])!;
+                let minx0 = Math.min(bbox1.xs[0], bbox2.xs[0]);
+                let miny0 = Math.min(bbox1.ys[0], bbox2.ys[0]);
+                let maxx1 = Math.max(bbox1.xs[1], bbox2.xs[1]);
+                let maxy1 = Math.max(bbox1.ys[1], bbox2.ys[1]);
                 return { xs: [minx0, maxx1], ys: [miny0, maxy1] }
             }
 
@@ -439,7 +438,7 @@ export class MMParser {
             while (tableStack.length > 0) {
                 let thisTable = tableStack.pop()!;
                 // webpack console.log("rrr");
-                let entries = lodash.filter(this.grandFlatArr, function (o) {
+                let entries = this.grandFlatArr.filter(function (o) {
                     return (o.belongToTable != null &&
                         o.text != null && o.belongToTable.uuid === thisTable.uuid);
                 });
@@ -457,7 +456,7 @@ export class MMParser {
                 }
 
 
-                let haveParent = lodash.find(this.grandFlatArr, function (o) {
+                let haveParent = this.grandFlatArr.find((o)=> {
                     return (o.belongToTable != null &&
                         o.type == LBlockType.mtable && o.belongToTable.uuid === thisTable.uuid);
                 });
@@ -830,7 +829,7 @@ export class MMParser {
                 }
             }
 
-            lodash.reverse(localLvlStack);// now array goes from leaves back to head
+            localLvlStack.reverse();// now array goes from leaves back to head
 
             // making edim for each block from leaves
             localLvlStack.forEach(block => {
@@ -838,7 +837,7 @@ export class MMParser {
                 block.edim = new ED.EDim(this.grandFlatArr, block);
             });
             // webpack console.log("=============");
-            lodash.reverse(localLvlStack);// now array goes from head to leaves again
+            localLvlStack.reverse();// now array goes from head to leaves again
 
 
             // localLvlStack.forEach(block => {
@@ -1075,7 +1074,7 @@ export class MMParser {
                 for (let j = 0; j < vertPositions.length; j++) {
                     finalVertices.positions.push(vertPositions[j]);
                 }
-                let maxvertidx = lodash.max(vertIndixes) as number;
+                let maxvertidx = Math.max(...vertIndixes) as number;
                 aggreIndex = aggreIndex + maxvertidx + 1;
 
 
@@ -1083,7 +1082,7 @@ export class MMParser {
 
             }
             let poses = finalVertices["positions"];
-            let minx = lodash.max(poses)!;
+            let minx = Math.max(...poses)!;
             let miny = minx;
             let minz = minx;
             for (let i = 0; i < poses.length; i++) {
@@ -1406,7 +1405,7 @@ export class MMParser {
                     }
                 }
                 else if (ele.type == matchedType && ele.closeFor != null) {
-                    lodash.remove(ownedDetailsinfo, function (tmp) { return tmp.owner.uuid === ele.closeFor!.uuid });
+                    ownedDetailsinfo = ownedDetailsinfo.filter(tmp=>tmp.owner.uuid !== ele.closeFor!.uuid)
                 }
                 return ownedDetailsinfo
             }
@@ -1857,7 +1856,7 @@ export class MMParser {
                     curTable.cols = (curTable.cols! / curTable.rows! | 0);
                     // webpack console.log("col:" + curTable.cols + " row:" + curTable.rows);
 
-                    const index = lodash.findIndex(this.grandFlatArr, (sub_ele) => sub_ele.uuid === ele.closeFor!.uuid);
+                    const index = this.grandFlatArr.findIndex( (sub_ele) => sub_ele.uuid === ele.closeFor!.uuid);
                     this.grandFlatArr[index].cols = curTable.cols;
                     this.grandFlatArr[index].rows = curTable.rows;
 
@@ -2033,7 +2032,7 @@ export class MMParser {
                 if (key.includes("annotation")) return;
             }
 
-            if (lodash.includes(keys, textKey)) {
+            if (keys.includes(textKey)) {
                 // // webpack console.log(prenodeKey + " " + textKey + " " + curObj[textKey] + " level:" + (level - 1).toString());
                 //cuStringArr.push(prenodeKey + " " + textKey + " " + curObj[textKey] + " level:" + (level - 1).toString());
                 var tmpMText: MEle = { node: prenodeKey, lvl: level - 1, text: curObj[textKey].toString(), type: MEleType.Text };
@@ -2054,7 +2053,7 @@ export class MMParser {
                     var tmpMEle: MEle = { node: key, lvl: level, type: MEleType.Start };
                     this.meleArr.push(tmpMEle);
 
-                    if (lodash.includes(keys, attriKey)) {
+                    if (keys.includes(attriKey)) {
 
                         var attriDets: MAttriDet[] = [];
 
