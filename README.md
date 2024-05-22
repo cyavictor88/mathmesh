@@ -4,7 +4,7 @@ this package is messy like spaghetti, but i think if it can help me, it might ca
 What it lacks:
 1. It doesn't support sqrt / nth root, please use ^(1/n) instead  
 
-To use:
+To install:
 
         npm install mathmesh
 
@@ -12,15 +12,15 @@ To use:
 <h3>What this package does:</h3>
 Given a latex math string, returns its positions and indices (for babylonjs) and vertices (for threejs bufferGeometry), also gives 2D mesh for framework like pixi js
 
-<b>For 3D:</b>
+<h3>For 3D Mesh:</h3>
 
-ex:
+to generate 3D mesh for your latex math:
 
       import {mathmesh} from "mathmesh";
-      var mesh = mathmesh("\\int_{a}^{b}x^2 \\,dx");
-      console.log(mesh)'
+      const mesh = mathmesh("\\int_{a}^{b}x^2 \\,dx");
+      console.log(mesh);
 
-you will get:
+you will see:
 
     {
       positions: [ x1, y1, z1, x2, y2, z2, .....],
@@ -29,27 +29,7 @@ you will get:
     }
 
 ___
-
-<h4>to use in babylon:</h4>
-
-    import {mathmesh} from "mathmesh";
-    ...
-    var verts = mathmesh("\\int_{a}^{b}x^2 \\,dx");
-    let customMesh = new Mesh("mymathmesh", scene);
-    let vertexData = new VertexData();
-
-    vertexData.positions = verts.positions;
-    vertexData.indices = verts.indices;
-    vertexData.applyToMesh(customMesh);
-
-    let fontmaterial = new StandardMaterial("mathmeshMat", scene);
-    fontmaterial.backFaceCulling = false;
-    fontmaterial.emissiveColor = new Color3(0, 1, 0);
-    customMesh.material = fontmaterial;
-
-![alt text](https://github.com/cyavictor88/mathmesh/blob/master/pics/example_babylon.png?raw=true)
----
-<h4>to use in threejs (@react-three/fiber):</h4>
+<h4>To use in ThreeJs (@react-three/fiber):</h4>
 
     import {mathmesh} from "mathmesh";
     const vertices = mathmesh("\\int_{a}^{b}x^2 \\,dx").vertices;
@@ -64,25 +44,48 @@ ___
     </bufferGeometry>
 
 ![alt text](https://github.com/cyavictor88/mathmesh/blob/master/pics/example_threejs.png?raw=true)
+---
+
 ___
 
+<h4>To use in BabylonJs:</h4>
+
+    import {mathmesh} from "mathmesh";
+    ...
+    const verts = mathmesh("\\int_{a}^{b}x^2 \\,dx");
+    const customMesh = new Mesh("myMathMesh", scene);
+    const vertexData = new VertexData();
+
+    vertexData.positions = verts.positions;
+    vertexData.indices = verts.indices;
+    vertexData.applyToMesh(customMesh);
+
+    const fontmaterial = new StandardMaterial("mathmeshMat", scene);
+    fontmaterial.backFaceCulling = false;
+    fontmaterial.emissiveColor = new Color3(0, 1, 0);
+    customMesh.material = fontmaterial;
+
+![alt text](https://github.com/cyavictor88/mathmesh/blob/master/pics/example_babylon.png?raw=true)
+
+Here is a example that showcases Vite+React+Babylon+Ts+Mathmesh: https://github.com/cyavictor88/mathmesh-ts-babylon
+
+---
+
+It works in Vite React, but for ```npm run build``` to work, you might need to do ```NODE_OPTIONS=--max-old-space-size=4000 vite build```
 
 
-
-It works in vite react, but for npm run build to work, you might need to add "NODE_OPTIONS=--max-old-space-size=4000 vite build" 
-
-Also tried in nextjs, runs fine
+Also tried in NextJs, runs fine
 ___
 
-<b>For 2D:</b>
+<h3>For 2D Mesh:</h3>
 
-ex:
+to generate 2D mesh for your latex math:
 
       import {mathmesh2D} from "mathmesh";
-      var mesh = mathmesh2D("\\int_{a}^{b}x^2 \\,dx");
-      console.log(mesh)'
+      const mesh = mathmesh2D("\\int_{a}^{b}x^2 \\,dx");
+      console.log(mesh);
 
-you will get:
+you will see:
 
     {
       positions: [ x1, y1, x2, y2, .....],
@@ -98,9 +101,10 @@ you will get:
 
 ___
 
-<h4>to use in 2D framework such as pixi js:</h4>
 
-<h3>using aVertexPosition and aTextureCoord:</h3>
+<h4>To use in 2D framework such as pixi js:</h4>
+
+<h5>Option 1 - with aVertexPosition and aTextureCoord:</h5>
 
     import {mathmesh2D} from "mathmesh";
     ...
@@ -115,7 +119,7 @@ ___
     const pixiMesh = new PIXI.Mesh(geometry, greenColor);
     app.stage.addChild(pixiMesh);
 
-<h3>using triangles:</h3>
+<h5>Options 2 - with triangles:</h5>
 
     import {mathmesh2D} from "mathmesh";
     ...
@@ -151,6 +155,7 @@ ___
 
 <h3>Remarks:</h3>
 The code is a mess. I think only I can read it coherently(not anymore). I will try to improve and fix it.
+
 ___
 
 
