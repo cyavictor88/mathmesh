@@ -1,6 +1,6 @@
 {
   "name": "mathmesh",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Given a latex math string, returns its positions and indices (for babylonjs)  and vertices (for threejs bufferGeometry), also gives 2D mesh for framework such as pixi",
   "types": "dist/mathmesh.d.ts",
   "files": [
